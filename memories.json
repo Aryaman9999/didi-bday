@@ -1,0 +1,156 @@
+{
+  "config": {
+    "name": "Nitu Didi",
+    "fullName": "Dr. Nitishikha Sharma",
+    "birthday": "2026-11-04",
+    "startDate": "2026-10-21",
+    "tagline": "Dentist · Yoga Teacher · Didi · Dream-chaser",
+    "subtitle": "From Delhi & Chandigarh to Sydney, Nova Scotia — 15 days of cherished moments leading to your special day 💛",
+    "footer": "Made with love · From CHD, all the way to Nova Scotia 💛"
+  },
+  "memories": [
+    {
+      "day": 1,
+      "title": "Little Beginnings in Delhi",
+      "story": "Every great journey has its origins. From childhood laughter in Delhi to guiding and inspiring everyone around you, you have always led with warmth and light.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "The earliest chapter"
+    },
+    {
+      "day": 2,
+      "title": "Growing Up in Chandigarh",
+      "story": "The wide avenues, breezy evenings, and countless family moments back in CHD. You were always the wiser, kinder big sister looking out for me.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Chandigarh days"
+    },
+    {
+      "day": 3,
+      "title": "The Ten-Year Wisdom",
+      "story": "Being 10 years younger meant having the ultimate role model. Whenever I needed advice, a gentle reality check, or a laugh, you were always right there.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Through the years"
+    },
+    {
+      "day": 4,
+      "title": "A Smile for Every Patient",
+      "story": "Watching you pursue dentistry with such dedication was incredible. Bringing comfort, relieving pain, and crafting confident smiles has always been your gift.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Dedication & Passion"
+    },
+    {
+      "day": 5,
+      "title": "The Yogi at Heart",
+      "story": "Finding calm amidst life's hustle. Your journey into yoga isn't just about asanas; it's the peaceful energy and mindfulness you radiate wherever you go.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Mindful moments"
+    },
+    {
+      "day": 6,
+      "title": "Chai, Talks & Siblings Bonds",
+      "story": "Unplanned late-night conversations over hot tea, sharing dreams, secrets, and ridiculous jokes that only the two of us would ever understand.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Unforgettable talks"
+    },
+    {
+      "day": 7,
+      "title": "Braving New Horizons",
+      "story": "Packing dreams across oceans! Moving across the globe takes immense courage, and you made Sydney, Nova Scotia feel like home with your sheer grace.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "The big leap"
+    },
+    {
+      "day": 8,
+      "title": "Atlantic Breezes & Island Life",
+      "story": "Sydney, Nova Scotia with its rugged coasts and tranquil skies. Even across thousands of miles and time zones, you make the distance feel small.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Nova Scotia beauty"
+    },
+    {
+      "day": 9,
+      "title": "Inspiring at the YMCA",
+      "story": "Guiding Sydney's community toward health and balance every week at the YMCA. You touch so many lives with your gentle instruction and encouraging spirit.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Community love"
+    },
+    {
+      "day": 10,
+      "title": "The Culinary Experiments",
+      "story": "Remembering favorite home-cooked meals, treats from Delhi and Chandigarh, and recreate-at-home attempts. Food tastes best when shared with family.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Flavors of home"
+    },
+    {
+      "day": 11,
+      "title": "Unshakeable Strength",
+      "story": "No matter what challenges life presented, your poise, resilience, and calm optimism have always been an anchor for all of us.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Always resilient"
+    },
+    {
+      "day": 12,
+      "title": "Celebrations Across Oceans",
+      "story": "Even when miles apart during festivals and milestones, video calls and thoughtful messages keep our family bond tighter than ever.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Festive memories"
+    },
+    {
+      "day": 13,
+      "title": "The Fun & Quirky Side",
+      "story": "Behind the accomplished doctor and zen yoga teacher is the sister with the goofy laugh, spontaneous dance moves, and funniest expressions.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Pure joy"
+    },
+    {
+      "day": 14,
+      "title": "The Eve of Another Wonderful Year",
+      "story": "Looking back on 14 days of memories, every single one proves how lucky I am to have you as my Didi. Tomorrow is all about celebrating you!",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Birthday Eve"
+    },
+    {
+      "day": 15,
+      "title": "Happy Birthday, Nitu Didi! 🎂",
+      "story": "Today is your day! Dr. Nitishikha Sharma — compassionate healer, soul-stirring yoga teacher, and the best big sister anyone could ever dream of having.",
+      "image": "",
+      "images": [],
+      "yearsAgo": "Today & Always"
+    }
+  ],
+  "exclusives": [
+    {
+      "id": "e1",
+      "title": "A Lifetime of Inspiration",
+      "story": "Growing up ten years behind you meant having a beacon to look up to every step of the way. Thank you for showing me what courage and kindness look like in practice.",
+      "image": "",
+      "images": []
+    },
+    {
+      "id": "e2",
+      "title": "From CHD to Sydney with Love",
+      "story": "The miles between Chandigarh and Nova Scotia disappear whenever we talk. Distance only magnifies how precious each family moment is.",
+      "image": "",
+      "images": []
+    },
+    {
+      "id": "e3",
+      "title": "Wishes for the Year Ahead",
+      "story": "May this year bring you thriving wellness, deep peace on the mat, glowing smiles in your clinic, and all the happiness your golden heart deserves!",
+      "image": "",
+      "images": []
+    }
+  ]
+}

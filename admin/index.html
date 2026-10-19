@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin & Photo Studio · Dr. Nitishikha's Album</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Lato:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #FDF6E3;
+      --card-bg: #FFFFFF;
+      --gold: #C4974A;
+      --gold-dark: #A57832;
+      --gold-light: #E8C87A;
+      --brown-dark: #3D2B1A;
+      --brown-mid: #7A5C44;
+      --brown-light: #C4A882;
+      --border: #E8DCCB;
+      --success: #2E7D32;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'Lato', sans-serif;
+      color: var(--brown-dark);
+      padding-bottom: 5rem;
+    }
+
+    /* Top Bar */
+    header {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--brown-dark);
+    }
+
+    .brand p {
+      font-size: 0.88rem;
+      color: var(--brown-mid);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--gold);
+      color: var(--gold-dark);
+    }
+    .btn-outline:hover {
+      background: var(--gold);
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--gold-dark);
+    }
+
+    .btn-danger {
+      background: #FFEBEE;
+      color: #C62828;
+      border-color: #FFCDD2;
+    }
+    .btn-danger:hover {
+      background: #C62828;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: var(--brown-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-card .value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--brown-dark);
+    }
+
+    /* Test Box */
+    .test-box {
+      background: #FFFDF8;
+      border: 1px dashed var(--gold);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .test-box-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--brown-dark);
+    }
+
+    .test-box-desc {
+      font-size: 0.88rem;
+      color: var(--brown-mid);
+    }
+
+    .test-box-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Slots List */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      color: var(--brown-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-sub {
+      color: var(--brown-mid);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .slot-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.75rem;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.75rem;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.02);
+      transition: border-color 0.2s ease;
+    }
+
+    .slot-card:hover {
+      border-color: var(--gold);
+    }
+
+    /* Photo Management Column */
+    .photos-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .photos-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .photo-thumb-card {
+      position: relative;
+      background: #FDF9F3;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .photo-thumb-img {
+      width: 75px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: var(--cream);
+      border: 1px solid rgba(0,0,0,0.05);
+      flex-shrink: 0;
+    }
+
+    .photo-thumb-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .photo-thumb-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--brown-dark);
+    }
+
+    .photo-thumb-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .empty-photos-box {
+      background: #FDF9F3;
+      border: 1px dashed var(--brown-light);
+      border-radius: 6px;
+      padding: 1.25rem 0.5rem;
+      text-align: center;
+      color: var(--brown-mid);
+      font-size: 0.85rem;
+    }
+
+    .add-photo-btn {
+      width: 100%;
+      background: #F4EBE0;
+      border: 1.5px dashed var(--gold);
+      color: var(--brown-dark);
+      padding: 0.65rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .add-photo-btn:hover {
+      background: var(--gold);
+      color: #fff;
+      border-style: solid;
+    }
+
+    .hidden-file-input {
+      display: none;
+    }
+
+    /* Form Column */
+    .form-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .slot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .day-tag {
+      font-family: 'Caveat', cursive;
+      font-size: 1.45rem;
+      color: var(--gold-dark);
+      font-weight: 700;
+    }
+
+    .status-badge {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .status-badge.has-slideshow {
+      background: #FFF8E1;
+      color: #B78103;
+      border: 1px solid #FFE082;
+    }
+
+    .status-badge.has-photo {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .status-badge.no-photo {
+      background: #FFF3E0;
+      color: #E65100;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--brown-mid);
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .text-input, .text-area {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: 'Lato', sans-serif;
+      font-size: 0.92rem;
+      color: var(--brown-dark);
+    }
+
+    .text-input:focus, .text-area:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(196,151,74,0.2);
+    }
+
+    .text-area {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .slot-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 0.25rem;
+    }
+
+    /* ======================================================================
+       Interactive Photo Studio & Cropper Modal
+       ====================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 15, 10, 0.78);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cropper-modal-card {
+      background: #FFFFFF;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 960px;
+      max-height: 94vh;
+      overflow-y: auto;
+      scrollbar-width: none;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    }
+    .cropper-modal-card::-webkit-scrollbar { display: none; }
+
+    .cropper-header {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFAFA;
+    }
+
+    .cropper-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--brown-dark);
+    }
+
+    .cropper-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--brown-mid);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .cropper-close-btn:hover {
+      background: #EEE;
+      color: var(--brown-dark);
+    }
+
+    .cropper-body {
+      padding: 1.5rem 1.75rem;
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 1.75rem;
+    }
+
+    /* Workspace / Canvas Area */
+    .cropper-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .crop-viewport {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: #23201C;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      cursor: grab;
+    }
+
+    .crop-viewport:active {
+      cursor: grabbing;
+    }
+
+    #cropCanvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* Draggable Quadrilateral Crop Box */
+    .crop-box {
+      position: absolute;
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+      cursor: move;
+      pointer-events: auto;
+    }
+
+    /* Rule of thirds grid lines */
+    .crop-grid-h, .crop-grid-v {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.25);
+      pointer-events: none;
+    }
+    .crop-grid-h1 { top: 33.33%; left: 0; right: 0; height: 1px; }
+    .crop-grid-h2 { top: 66.66%; left: 0; right: 0; height: 1px; }
+    .crop-grid-v1 { left: 33.33%; top: 0; bottom: 0; width: 1px; }
+    .crop-grid-v2 { left: 66.66%; top: 0; bottom: 0; width: 1px; }
+
+    /* Handles */
+    .crop-handle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #FFFFFF;
+      border: 2px solid var(--gold);
+      border-radius: 2px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .handle-nw { top: -6px; left: -6px; cursor: nwse-resize; }
+    .handle-ne { top: -6px; right: -6px; cursor: nesw-resize; }
+    .handle-se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+    .handle-sw { bottom: -6px; left: -6px; cursor: nesw-resize; }
+    .handle-n  { top: -6px; left: calc(50% - 6px); cursor: ns-resize; }
+    .handle-s  { bottom: -6px; left: calc(50% - 6px); cursor: ns-resize; }
+    .handle-w  { left: -6px; top: calc(50% - 6px); cursor: ew-resize; }
+    .handle-e  { right: -6px; top: calc(50% - 6px); cursor: ew-resize; }
+
+    /* Controls bar */
+    .cropper-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+      background: #F8F5F0;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .tool-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tool-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--brown-mid);
+    }
+
+    .tool-btn {
+      background: #FFFFFF;
+      border: 1px solid var(--brown-light);
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--brown-dark);
+      transition: all 0.15s ease;
+    }
+    .tool-btn:hover, .tool-btn.active {
+      background: var(--gold);
+      color: #fff;
+      border-color: var(--gold);
+    }
+
+    .zoom-slider {
+      width: 110px;
+      cursor: pointer;
+    }
+
+    /* Live Polaroid Preview Column */
+    .cropper-preview-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .preview-header-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brown-dark);
+      text-align: center;
+    }
+
+    .preview-note {
+      font-size: 0.78rem;
+      color: var(--brown-mid);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    /* Exact Mini Polaroid Card */
+    .mini-polaroid {
+      width: 250px;
+      background: #FFFFFF;
+      border: 1px solid rgba(226, 213, 195, 0.8);
+      border-radius: 3px;
+      padding: 0.85rem 0.85rem 1.25rem;
+      box-shadow: 0 10px 25px rgba(61, 43, 26, 0.15);
+      position: relative;
+    }
+
+    .mini-polaroid::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 18px;
+      background: rgba(232, 200, 122, 0.5);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    .mini-photo-wrap {
+      width: 100%;
+      aspect-ratio: 4 / 3.3;
+      background: #EDE4D8;
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+
+    #livePreviewCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .mini-card-content {
+      padding-top: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .mini-day {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .mini-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--brown-dark);
+      line-height: 1.2;
+    }
+
+    .cropper-footer {
+      padding: 1.25rem 1.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: #FAFAFA;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2E7D32;
+      color: #FFFFFF;
+      padding: 0.85rem 1.4rem;
+      border-radius: 6px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    #toast.error {
+      background: #C62828;
+    }
+
+    @media (max-width: 880px) {
+      .slot-card {
+        grid-template-columns: 1fr;
+      }
+      .cropper-body {
+        grid-template-columns: 1fr;
+      }
+      .mini-polaroid {
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>Album Admin & Photo Studio</h1>
+      <p>Customizing memories for Dr. Nitishikha Sharma (Nitu Didi)</p>
+    </div>
+    <div class="header-actions">
+      <a href="/" target="_blank" class="btn btn-outline">🌐 View Website</a>
+      <button id="deployBtn" class="btn btn-primary" type="button">🚀 Push to GitHub</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Total Daily Memories</div>
+        <div class="value">15 Days</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Photos Uploaded</div>
+        <div class="value" id="statPhotos">0 Photos</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Countdown Start</div>
+        <div class="value" style="font-size: 1.4rem; padding-top: 0.3rem;">Oct 21, 2026</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Birthday Celebration</div>
+        <div class="value" style="font-size: 1.4rem; padding-top: 0.3rem; color: var(--gold-dark);">Nov 4, 2026</div>
+      </div>
+    </div>
+
+    <!-- Testing & Simulation Bar -->
+    <div class="test-box">
+      <div>
+        <div class="test-box-title">✦ Instant Preview & Simulation Mode</div>
+        <div class="test-box-desc">Preview any date, test the automatic multi-photo slideshow, or unlock all memories.</div>
+      </div>
+      <div class="test-box-actions">
+        <a href="/?unlockAll=true" target="_blank" class="btn btn-outline" style="font-size: 0.85rem;">
+          🔓 Unlock All (Preview Mode)
+        </a>
+        <a href="/?simulateDate=2026-11-04&bday=true" target="_blank" class="btn btn-primary" style="font-size: 0.85rem;">
+          🎂 Test Birthday Experience (Nov 4)
+        </a>
+      </div>
+    </div>
+
+    <!-- Daily Memories List -->
+    <h2 class="section-title">Daily Countdown Memories (15 Days)</h2>
+    <p class="section-sub">Add 1, 2, or more photos per day! Multiple photos automatically create an elegant slideshow with dots turning into dashes.</p>
+    
+    <div id="dailySlotsContainer">
+      <!-- Generated by JS -->
+    </div>
+
+    <!-- Birthday Exclusive Reel Memories -->
+    <h2 class="section-title" style="margin-top: 3.5rem;">Birthday Exclusives (3 Reel Memories)</h2>
+    <p class="section-sub">These special memories reveal on November 4 during the Birthday Celebration and Reel slideshow.</p>
+    
+    <div id="exclusiveSlotsContainer">
+      <!-- Generated by JS -->
+    </div>
+
+  </main>
+
+  <!-- ======================================================================
+       Interactive Photo Studio & Cropper Modal
+       ====================================================================== -->
+  <div id="cropperModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="cropper-modal-card">
+      <div class="cropper-header">
+        <div>
+          <h2 id="cropperTitle">✂️ Photo Studio & Cropper</h2>
+          <p id="cropperSub" style="font-size: 0.85rem; color: var(--brown-mid); margin-top: 2px;">Adjust crop, zoom in/out, and fit to polaroid card</p>
+        </div>
+        <button class="cropper-close-btn" type="button" onclick="closeCropperModal()" aria-label="Close">×</button>
+      </div>
+
+      <div class="cropper-body">
+        <!-- Left: Cropper Workspace -->
+        <div class="cropper-workspace">
+          <div class="crop-viewport" id="cropViewport">
+            <canvas id="cropCanvas"></canvas>
+            
+            <!-- Draggable Quadrilateral Crop Box -->
+            <div class="crop-box" id="cropBox">
+              <div class="crop-grid-h crop-grid-h1"></div>
+              <div class="crop-grid-h crop-grid-h2"></div>
+              <div class="crop-grid-v crop-grid-v1"></div>
+              <div class="crop-grid-v crop-grid-v2"></div>
+              
+              <!-- 8 Handles -->
+              <div class="crop-handle handle-nw" data-handle="nw"></div>
+              <div class="crop-handle handle-ne" data-handle="ne"></div>
+              <div class="crop-handle handle-se" data-handle="se"></div>
+              <div class="crop-handle handle-sw" data-handle="sw"></div>
+              <div class="crop-handle handle-n" data-handle="n"></div>
+              <div class="crop-handle handle-s" data-handle="s"></div>
+              <div class="crop-handle handle-w" data-handle="w"></div>
+              <div class="crop-handle handle-e" data-handle="e"></div>
+            </div>
+          </div>
+
+          <!-- Controls Toolbar -->
+          <div class="cropper-toolbar">
+            <!-- Zoom Controls -->
+            <div class="tool-group">
+              <label>Zoom:</label>
+              <button class="tool-btn" type="button" onclick="adjustZoom(-0.15)">🔍−</button>
+              <input type="range" id="cropZoomSlider" class="zoom-slider" min="0.3" max="3.5" step="0.05" value="1">
+              <button class="tool-btn" type="button" onclick="adjustZoom(0.15)">🔍+</button>
+            </div>
+
+            <!-- Rotation & Reset -->
+            <div class="tool-group">
+              <button class="tool-btn" type="button" onclick="rotateImage()">↻ Rotate 90°</button>
+              <button class="tool-btn" type="button" onclick="resetCropToFit()">⤢ Fit to Card</button>
+            </div>
+
+            <!-- Aspect Presets -->
+            <div class="tool-group">
+              <button class="tool-btn active" id="btnAspect43" type="button" onclick="setAspectRatio(4/3.3)">4:3 Card Fit</button>
+              <button class="tool-btn" id="btnAspectFree" type="button" onclick="setAspectRatio(null)">Freeform Crop</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Polaroid Card Preview -->
+        <div class="cropper-preview-col">
+          <div class="preview-header-label">Live Polaroid Preview</div>
+          <div class="preview-note">This is exactly how it will look on Nitu Didi's website:</div>
+
+          <div class="mini-polaroid">
+            <div class="mini-photo-wrap">
+              <canvas id="livePreviewCanvas" width="280" height="231"></canvas>
+            </div>
+            <div class="mini-card-content">
+              <span class="mini-day" id="previewDayLabel">Day 1</span>
+              <div class="mini-title" id="previewTitleLabel">Memory Title</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cropper-footer">
+        <button class="btn btn-outline" type="button" onclick="closeCropperModal()">Cancel</button>
+        <button class="btn btn-primary" id="saveCropBtn" type="button" onclick="applyAndSaveCroppedPhoto()">
+          Save & Apply Photo ✦
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Toast -->
+  <div id="toast">Changes saved!</div>
+
+  <!-- Hidden global file input for cropper -->
+  <input type="file" id="globalFileInput" class="hidden-file-input" accept="image/*">
+
+  <script>
+    let albumData = null;
+    const PLACEHOLDER_SVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'%3E%3Crect fill='%23EDE4D8' width='300' height='200'/%3E%3Ctext x='150' y='105' font-family='sans-serif' font-size='13' fill='%239E8464' text-anchor='middle'%3ENo Photo Uploaded%3C/text%3E%3C/svg%3E`;
+
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = isError ? 'show error' : 'show';
+      setTimeout(() => {
+        toast.className = '';
+      }, 3500);
+    }
+
+    // Helper: get images array
+    function getSlotImages(item) {
+      if (Array.isArray(item.images) && item.images.length > 0) {
+        return item.images.filter(Boolean);
+      }
+      if (item.image && item.image.trim()) {
+        return [item.image];
+      }
+      return [];
+    }
+
+    async function loadMemories() {
+      try {
+        const res = await fetch('/api/memories');
+        if (!res.ok) throw new Error('Could not load memories API');
+        albumData = await res.json();
+        renderAllSlots();
+        updateStats();
+      } catch (err) {
+        console.error(err);
+        showToast('Error loading memories data: ' + err.message, true);
+      }
+    }
+
+    function updateStats() {
+      if (!albumData) return;
+      let totalCount = 0;
+      albumData.memories.forEach(m => { totalCount += getSlotImages(m).length; });
+      (albumData.exclusives || []).forEach(e => { totalCount += getSlotImages(e).length; });
+      document.getElementById('statPhotos').textContent = `${totalCount} Photos Uploaded`;
+    }
+
+    function renderAllSlots() {
+      // 1. Daily Memories
+      const dailyContainer = document.getElementById('dailySlotsContainer');
+      dailyContainer.innerHTML = '';
+      albumData.memories.forEach(mem => {
+        dailyContainer.appendChild(createSlotElement(`day${mem.day}`, `Day ${mem.day}`, mem));
+      });
+
+      // 2. Birthday Exclusives
+      const excContainer = document.getElementById('exclusiveSlotsContainer');
+      excContainer.innerHTML = '';
+      (albumData.exclusives || []).forEach(exc => {
+        dailyContainer.appendChild(createSlotElement(exc.id, `Exclusive: ${exc.id.toUpperCase()}`, exc));
+      });
+    }
+
+    function createSlotElement(slotId, badgeLabel, item) {
+      const card = document.createElement('div');
+      card.className = 'slot-card';
+      card.id = `card-${slotId}`;
+
+      const images = getSlotImages(item);
+      const isSlideshow = images.length > 1;
+
+      // Photos Gallery HTML
+      let galleryHtml = '';
+      if (images.length === 0) {
+        galleryHtml = `<div class="empty-photos-box">No photos added yet. Click below to add a photo!</div>`;
+      } else {
+        galleryHtml = `
+          <div class="photos-gallery">
+            ${images.map((img, idx) => `
+              <div class="photo-thumb-card">
+                <img src="/${img}?t=${Date.now()}" class="photo-thumb-img" alt="Photo ${idx+1}" onerror="this.src='${PLACEHOLDER_SVG}'">
+                <div class="photo-thumb-info">
+                  <span class="photo-thumb-title">Photo ${idx+1} ${idx === 0 ? '(Cover)' : ''}</span>
+                  <div class="photo-thumb-actions">
+                    <button class="btn btn-outline btn-sm" type="button" onclick="editExistingPhoto('${slotId}', ${idx}, '/${img}')">
+                      ✂️ Crop
+                    </button>
+                    <button class="btn btn-danger btn-sm" type="button" onclick="deletePhoto('${slotId}', ${idx})">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      let statusBadge = '';
+      if (isSlideshow) {
+        statusBadge = `<span class="status-badge has-slideshow">🎬 Slideshow (${images.length} Photos)</span>`;
+      } else if (images.length === 1) {
+        statusBadge = `<span class="status-badge has-photo">✓ 1 Photo</span>`;
+      } else {
+        statusBadge = `<span class="status-badge no-photo">No Photos</span>`;
+      }
+
+      card.innerHTML = `
+        <div class="photos-col">
+          ${galleryHtml}
+          <button class="add-photo-btn" type="button" onclick="triggerAddNewPhoto('${slotId}')">
+            📷 ➕ Add Photo ${images.length > 0 ? 'to Slideshow' : ''}
+          </button>
+        </div>
+
+        <div class="form-col">
+          <div class="slot-header">
+            <span class="day-tag">${badgeLabel}</span>
+            <div id="badge-${slotId}">${statusBadge}</div>
+          </div>
+
+          <div class="input-row">
+            <div>
+              <label class="form-label">Memory Title</label>
+              <input type="text" class="text-input" id="title-${slotId}" value="${escapeAttr(item.title || '')}">
+            </div>
+            <div>
+              <label class="form-label">Era / Subtitle</label>
+              <input type="text" class="text-input" id="years-${slotId}" value="${escapeAttr(item.yearsAgo || '')}">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Memory Story / Caption</label>
+            <textarea class="text-area" id="story-${slotId}">${escapeHtml(item.story || '')}</textarea>
+          </div>
+
+          <div class="slot-footer">
+            <button class="btn btn-primary" type="button" onclick="saveSlotText('${slotId}')">
+              Save Details
+            </button>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    async function saveSlotText(slotId) {
+      const title = document.getElementById(`title-${slotId}`).value;
+      const yearsAgo = document.getElementById(`years-${slotId}`) ? document.getElementById(`years-${slotId}`).value : '';
+      const story = document.getElementById(`story-${slotId}`).value;
+
+      try {
+        const res = await fetch(`/api/memories/${slotId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, yearsAgo, story })
+        });
+        const result = await res.json();
+        if (result.success) {
+          showToast(`✦ ${slotId.toUpperCase()} details saved!`);
+        } else {
+          showToast(result.error || 'Failed to save', true);
+        }
+      } catch (err) {
+        showToast('Network error while saving: ' + err.message, true);
+      }
+    }
+
+    async function deletePhoto(slotId, photoIndex) {
+      if (!confirm(`Are you sure you want to remove photo #${photoIndex + 1}?`)) return;
+
+      try {
+        const res = await fetch(`/api/memories/${slotId}/delete-photo`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ index: photoIndex })
+        });
+        const result = await res.json();
+        if (result.success) {
+          showToast(`✦ Photo deleted successfully.`);
+          await loadMemories();
+        } else {
+          showToast(result.error || 'Could not delete photo', true);
+        }
+      } catch (err) {
+        showToast('Delete error: ' + err.message, true);
+      }
+    }
+
+    // ======================================================================
+    // Mini Photo Studio & Quadrilateral Cropper Engine
+    // ======================================================================
+    let cropperState = {
+      slotId: null,
+      photoIndex: -1,
+      action: 'add', // 'add' or 'replace'
+      img: null,
+      imgLoaded: false,
+      rotation: 0,
+      zoom: 1.0,
+      panX: 0,
+      panY: 0,
+      aspectLock: 4 / 3.3, // default polaroid ratio
+      crop: { x: 40, y: 30, w: 260, h: 215 },
+      isDraggingBox: false,
+      isDraggingHandle: null,
+      isPanning: false,
+      dragStartX: 0,
+      dragStartY: 0,
+      initialCrop: null,
+      initialPan: null
+    };
+
+    function triggerAddNewPhoto(slotId) {
+      cropperState.slotId = slotId;
+      cropperState.photoIndex = -1;
+      cropperState.action = 'add';
+
+      const fileInput = document.getElementById('globalFileInput');
+      fileInput.value = '';
+      fileInput.onchange = (e) => {
+        if (!e.target.files || !e.target.files[0]) return;
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          openCropperStudio(slotId, ev.target.result, 'add', -1);
+        };
+        reader.readAsDataURL(file);
+      };
+      fileInput.click();
+    }
+
+    function editExistingPhoto(slotId, index, srcUrl) {
+      openCropperStudio(slotId, srcUrl, 'replace', index);
+    }
+
+    function openCropperStudio(slotId, imageSrc, action, index) {
+      cropperState.slotId = slotId;
+      cropperState.action = action;
+      cropperState.photoIndex = index;
+      cropperState.rotation = 0;
+      cropperState.zoom = 1.0;
+      cropperState.panX = 0;
+      cropperState.panY = 0;
+      cropperState.aspectLock = 4 / 3.3;
+
+      document.getElementById('btnAspect43').classList.add('active');
+      document.getElementById('btnAspectFree').classList.remove('active');
+      document.getElementById('cropZoomSlider').value = 1.0;
+
+      // Set titles in modal
+      let slotLabel = slotId.startsWith('day') ? `Day ${slotId.replace('day', '')}` : slotId.toUpperCase();
+      document.getElementById('cropperTitle').textContent = `✂️ Photo Studio · ${slotLabel}`;
+      document.getElementById('previewDayLabel').textContent = slotLabel;
+      
+      const titleInput = document.getElementById(`title-${slotId}`);
+      if (titleInput) {
+        document.getElementById('previewTitleLabel').textContent = titleInput.value || "Memory Title";
+      }
+
+      // Load Image
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        cropperState.img = img;
+        cropperState.imgLoaded = true;
+        
+        // Show modal
+        const modal = document.getElementById('cropperModal');
+        modal.classList.add('active');
+
+        // Setup initial crop box inside viewport
+        resetCropToFit();
+        setupCropperEvents();
+      };
+      img.src = imageSrc;
+    }
+
+    function closeCropperModal() {
+      const modal = document.getElementById('cropperModal');
+      modal.classList.remove('active');
+      cropperState.imgLoaded = false;
+    }
+
+    function resetCropToFit() {
+      const viewport = document.getElementById('cropViewport');
+      const vw = viewport.clientWidth || 450;
+      const vh = viewport.clientHeight || 380;
+
+      // Center crop box
+      let cw = vw * 0.72;
+      let ch = cw / (cropperState.aspectLock || (4 / 3.3));
+      if (ch > vh * 0.8) {
+        ch = vh * 0.8;
+        cw = ch * (cropperState.aspectLock || (4 / 3.3));
+      }
+
+      cropperState.crop = {
+        x: Math.round((vw - cw) / 2),
+        y: Math.round((vh - ch) / 2),
+        w: Math.round(cw),
+        h: Math.round(ch)
+      };
+
+      cropperState.zoom = 1.0;
+      cropperState.panX = 0;
+      cropperState.panY = 0;
+      document.getElementById('cropZoomSlider').value = 1.0;
+
+      updateCropBoxDom();
+      renderCropCanvas();
+      renderLivePreview();
+    }
+
+    function setAspectRatio(ratio) {
+      cropperState.aspectLock = ratio;
+      document.getElementById('btnAspect43').classList.toggle('active', ratio !== null);
+      document.getElementById('btnAspectFree').classList.toggle('active', ratio === null);
+
+      if (ratio) {
+        cropperState.crop.h = Math.round(cropperState.crop.w / ratio);
+        const viewport = document.getElementById('cropViewport');
+        if (cropperState.crop.y + cropperState.crop.h > viewport.clientHeight) {
+          cropperState.crop.h = viewport.clientHeight - cropperState.crop.y - 10;
+          cropperState.crop.w = Math.round(cropperState.crop.h * ratio);
+        }
+      }
+      updateCropBoxDom();
+      renderLivePreview();
+    }
+
+    function adjustZoom(delta) {
+      const slider = document.getElementById('cropZoomSlider');
+      let val = parseFloat(slider.value) + delta;
+      val = Math.max(0.3, Math.min(3.5, val));
+      slider.value = val;
+      cropperState.zoom = val;
+      renderCropCanvas();
+      renderLivePreview();
+    }
+
+    function rotateImage() {
+      cropperState.rotation = (cropperState.rotation + 90) % 360;
+      renderCropCanvas();
+      renderLivePreview();
+    }
+
+    function updateCropBoxDom() {
+      const box = document.getElementById('cropBox');
+      box.style.left = `${cropperState.crop.x}px`;
+      box.style.top = `${cropperState.crop.y}px`;
+      box.style.width = `${cropperState.crop.w}px`;
+      box.style.height = `${cropperState.crop.h}px`;
+    }
+
+    function renderCropCanvas() {
+      if (!cropperState.imgLoaded) return;
+      const viewport = document.getElementById('cropViewport');
+      const canvas = document.getElementById('cropCanvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = viewport.clientWidth;
+      canvas.height = viewport.clientHeight;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+
+      // Transform center
+      ctx.translate(canvas.width / 2 + cropperState.panX, canvas.height / 2 + cropperState.panY);
+      ctx.rotate((cropperState.rotation * Math.PI) / 180);
+      ctx.scale(cropperState.zoom, cropperState.zoom);
+
+      // Draw image centered
+      const img = cropperState.img;
+      const iw = img.naturalWidth || img.width;
+      const ih = img.naturalHeight || img.height;
+
+      // Fit ratio to canvas initially
+      const baseFit = Math.min((canvas.width * 0.85) / iw, (canvas.height * 0.85) / ih);
+      const dw = iw * baseFit;
+      const dh = ih * baseFit;
+
+      ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+      ctx.restore();
+    }
+
+    function renderLivePreview() {
+      if (!cropperState.imgLoaded) return;
+      const mainCanvas = document.getElementById('cropCanvas');
+      const previewCanvas = document.getElementById('livePreviewCanvas');
+      const pctx = previewCanvas.getContext('2d');
+
+      const crop = cropperState.crop;
+      if (crop.w <= 0 || crop.h <= 0) return;
+
+      pctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      pctx.drawImage(
+        mainCanvas,
+        crop.x, crop.y, crop.w, crop.h,
+        0, 0, previewCanvas.width, previewCanvas.height
+      );
+    }
+
+    // Cropper Interactions (Drag, Pan, Resize Quadrilateral)
+    let eventsAttached = false;
+    function setupCropperEvents() {
+      if (eventsAttached) return;
+      eventsAttached = true;
+
+      const viewport = document.getElementById('cropViewport');
+      const cropBox = document.getElementById('cropBox');
+      const slider = document.getElementById('cropZoomSlider');
+
+      slider.addEventListener('input', (e) => {
+        cropperState.zoom = parseFloat(e.target.value);
+        renderCropCanvas();
+        renderLivePreview();
+      });
+
+      // Mouse wheel zoom
+      viewport.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.08 : -0.08;
+        adjustZoom(delta);
+      }, { passive: false });
+
+      // Handle pointer down on handles
+      cropBox.addEventListener('pointerdown', (e) => {
+        const handle = e.target.getAttribute('data-handle');
+        if (handle) {
+          e.stopPropagation();
+          cropperState.isDraggingHandle = handle;
+          cropperState.dragStartX = e.clientX;
+          cropperState.dragStartY = e.clientY;
+          cropperState.initialCrop = { ...cropperState.crop };
+        } else {
+          // Drag crop box
+          e.stopPropagation();
+          cropperState.isDraggingBox = true;
+          cropperState.dragStartX = e.clientX;
+          cropperState.dragStartY = e.clientY;
+          cropperState.initialCrop = { ...cropperState.crop };
+        }
+      });
+
+      // Pan image on background drag
+      viewport.addEventListener('pointerdown', (e) => {
+        if (e.target === viewport || e.target === document.getElementById('cropCanvas')) {
+          cropperState.isPanning = true;
+          cropperState.dragStartX = e.clientX;
+          cropperState.dragStartY = e.clientY;
+          cropperState.initialPan = { x: cropperState.panX, y: cropperState.panY };
+        }
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!cropperState.imgLoaded) return;
+        const dx = e.clientX - cropperState.dragStartX;
+        const dy = e.clientY - cropperState.dragStartY;
+
+        // 1. Drag Crop Box
+        if (cropperState.isDraggingBox) {
+          const vw = viewport.clientWidth;
+          const vh = viewport.clientHeight;
+          let nx = cropperState.initialCrop.x + dx;
+          let ny = cropperState.initialCrop.y + dy;
+
+          nx = Math.max(0, Math.min(vw - cropperState.crop.w, nx));
+          ny = Math.max(0, Math.min(vh - cropperState.crop.h, ny));
+
+          cropperState.crop.x = nx;
+          cropperState.crop.y = ny;
+          updateCropBoxDom();
+          renderLivePreview();
+        }
+
+        // 2. Drag Handle (Resize Crop Box)
+        else if (cropperState.isDraggingHandle) {
+          const h = cropperState.isDraggingHandle;
+          const init = cropperState.initialCrop;
+          let { x, y, w, h: ch } = init;
+
+          if (h.includes('e')) w += dx;
+          if (h.includes('s')) ch += dy;
+          if (h.includes('w')) { x += dx; w -= dx; }
+          if (h.includes('n')) { y += dy; ch -= dy; }
+
+          const minSize = 45;
+          if (w < minSize) { w = minSize; x = init.x + (h.includes('w') ? init.w - minSize : 0); }
+          if (ch < minSize) { ch = minSize; y = init.y + (h.includes('n') ? init.h - minSize : 0); }
+
+          if (cropperState.aspectLock) {
+            ch = Math.round(w / cropperState.aspectLock);
+          }
+
+          cropperState.crop = { x, y, w, h: ch };
+          updateCropBoxDom();
+          renderLivePreview();
+        }
+
+        // 3. Pan Image
+        else if (cropperState.isPanning) {
+          cropperState.panX = cropperState.initialPan.x + dx;
+          cropperState.panY = cropperState.initialPan.y + dy;
+          renderCropCanvas();
+          renderLivePreview();
+        }
+      });
+
+      window.addEventListener('pointerup', () => {
+        cropperState.isDraggingBox = false;
+        cropperState.isDraggingHandle = null;
+        cropperState.isPanning = false;
+      });
+    }
+
+    // High Quality Export & Upload
+    async function applyAndSaveCroppedPhoto() {
+      const saveBtn = document.getElementById('saveCropBtn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving & Cropping...';
+
+      try {
+        const mainCanvas = document.getElementById('cropCanvas');
+        const crop = cropperState.crop;
+
+        // Render high resolution export canvas
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = 1200;
+        exportCanvas.height = Math.round(1200 / (crop.w / crop.h));
+        const ectx = exportCanvas.getContext('2d');
+
+        ectx.imageSmoothingEnabled = true;
+        ectx.imageSmoothingQuality = 'high';
+
+        ectx.drawImage(
+          mainCanvas,
+          crop.x, crop.y, crop.w, crop.h,
+          0, 0, exportCanvas.width, exportCanvas.height
+        );
+
+        exportCanvas.toBlob(async (blob) => {
+          if (!blob) throw new Error('Could not generate cropped image');
+
+          const formData = new FormData();
+          formData.append('photo', blob, `photo_${Date.now()}.jpg`);
+          formData.append('action', cropperState.action);
+          if (cropperState.photoIndex >= 0) {
+            formData.append('index', cropperState.photoIndex);
+          }
+
+          const res = await fetch(`/api/upload/${cropperState.slotId}`, {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await res.json();
+          if (result.success) {
+            showToast(`✦ Photo saved & cropped successfully for ${cropperState.slotId.toUpperCase()}!`);
+            closeCropperModal();
+            await loadMemories();
+          } else {
+            showToast(result.error || 'Failed to upload cropped photo', true);
+          }
+          saveBtn.disabled = false;
+          saveBtn.textContent = 'Save & Apply Photo ✦';
+        }, 'image/jpeg', 0.92);
+
+      } catch (err) {
+        console.error(err);
+        showToast('Error saving crop: ' + err.message, true);
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save & Apply Photo ✦';
+      }
+    }
+
+    // Deploy to GitHub
+    document.getElementById('deployBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('deployBtn');
+      btn.disabled = true;
+      btn.textContent = 'Pushing to GitHub...';
+
+      try {
+        const res = await fetch('/api/deploy', { method: 'POST' });
+        const result = await res.json();
+        if (result.success) {
+          showToast('✦ ' + result.message);
+        } else {
+          showToast('Deploy issue: ' + (result.details || result.error), true);
+        }
+      } catch (err) {
+        showToast('Deploy error: ' + err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🚀 Push to GitHub';
+      }
+    });
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function escapeAttr(str) {
+      return (str || '').replace(/"/g, '&quot;');
+    }
+
+    // Load memories on start
+    loadMemories();
+  </script>
+
+</body>
+</html>
