@@ -54,6 +54,56 @@ function daysDiff(fromStr, toStr) {
 }
 
 // --------------------------------------------------------------------------
+// Preview Mode Authentication Gate (Unlock All Memories)
+// --------------------------------------------------------------------------
+const AUTH_USER = 'aryaman';
+const AUTH_PASS = 'nitudidbday';
+
+function promptPreviewLogin() {
+  const modal = document.getElementById('previewAuthModal');
+  if (modal) modal.classList.add('active');
+  document.body.classList.add('modal-open');
+}
+
+window.handlePreviewLogin = function(e) {
+  e.preventDefault();
+  const u = document.getElementById('previewUser').value.trim();
+  const p = document.getElementById('previewPass').value;
+  const err = document.getElementById('previewLoginError');
+
+  if (u === AUTH_USER && p === AUTH_PASS) {
+    sessionStorage.setItem('bday_preview_auth', 'true');
+    err.style.display = 'none';
+    document.getElementById('previewAuthModal').classList.remove('active');
+    document.body.classList.remove('modal-open');
+    const banner = document.getElementById('previewModeBanner');
+    if (banner) banner.classList.remove('hidden');
+    renderMemoryGrid(getActiveDateStr(), true);
+  } else {
+    err.style.display = 'block';
+  }
+};
+
+window.cancelPreviewLogin = function() {
+  document.getElementById('previewAuthModal').classList.remove('active');
+  document.body.classList.remove('modal-open');
+  const url = new URL(window.location);
+  url.searchParams.delete('unlockAll');
+  window.history.replaceState({}, '', url);
+  renderMemoryGrid(getActiveDateStr(), false);
+};
+
+window.exitPreviewMode = function() {
+  sessionStorage.removeItem('bday_preview_auth');
+  const banner = document.getElementById('previewModeBanner');
+  if (banner) banner.classList.add('hidden');
+  const url = new URL(window.location);
+  url.searchParams.delete('unlockAll');
+  window.history.replaceState({}, '', url);
+  renderMemoryGrid(getActiveDateStr(), false);
+};
+
+// --------------------------------------------------------------------------
 // Initialization
 // --------------------------------------------------------------------------
 async function initAlbum() {
@@ -69,9 +119,24 @@ async function initAlbum() {
     return;
   }
 
+  const AUTH_USER = 'aryaman';
+  const AUTH_PASS = 'nitudidbday';
+
   const currentDate = getActiveDateStr();
   const urlParams = new URLSearchParams(window.location.search);
-  const unlockAll = urlParams.get('unlockAll') === 'true';
+  const requestedUnlockAll = urlParams.get('unlockAll') === 'true';
+
+  let unlockAll = false;
+  if (requestedUnlockAll) {
+    if (sessionStorage.getItem('bday_preview_auth') === 'true') {
+      unlockAll = true;
+      const banner = document.getElementById('previewModeBanner');
+      if (banner) banner.classList.remove('hidden');
+    } else {
+      // Prompt credentials before unlocking future memories!
+      promptPreviewLogin();
+    }
+  }
 
   // Update dynamic texts
   document.getElementById('headerTitle').textContent = albumData.config.fullName || "Dr. Nitishikha Sharma";
