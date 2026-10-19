@@ -12,9 +12,13 @@
     {
       "day": 1,
       "title": "Little Beginnings in Delhi",
-      "story": "Every great journey has its origins. From childhood laughter in Delhi to guiding and inspiring everyone around you, you have always led with warmth and light.",
-      "image": "",
-      "images": [],
+      "story": "4th November, 1994: The day Nitu Didi (aka Dr. Nitishikha Sharma) was born. Being the first child of the family she was obviously the most loved human in the universe at that time.",
+      "image": "assets/images/memories/day1_1792426674191.jpg",
+      "images": [
+        "assets/images/memories/day1_1792426674191.jpg",
+        "assets/images/memories/day1_1792426741711.jpg",
+        "assets/images/memories/day1_1792426806300.jpg"
+      ],
       "yearsAgo": "The earliest chapter"
     },
     {
