@@ -86,6 +86,65 @@ app.get('/api/memories', (req, res) => {
   }
 });
 
+// POST swap content between two slots (MUST BE DEFINED BEFORE /api/memories/:slot)
+app.post('/api/memories/swap', (req, res) => {
+  try {
+    const { slotA, slotB } = req.body;
+    if (!slotA || !slotB) {
+      return res.status(400).json({ error: 'Both slotA and slotB are required' });
+    }
+    if (slotA === slotB) {
+      return res.status(400).json({ error: 'Cannot swap a slot with itself' });
+    }
+
+    const data = getMemoriesData();
+    const itemA = findSlotItem(data, slotA);
+    const itemB = findSlotItem(data, slotB);
+
+    if (!itemA || !itemB) {
+      return res.status(404).json({ error: `One or both slots not found (${slotA}, ${slotB})` });
+    }
+
+    // Keep backup before swapping
+    try {
+      fs.copyFileSync(MEMORIES_FILE, path.join(ROOT_DIR, 'memories.json.bak'));
+    } catch (e) {
+      console.warn('Backup copy failed:', e.message);
+    }
+
+    // Swap all content fields (title, story, yearsAgo, image, images)
+    const temp = {
+      title: itemA.title || '',
+      story: itemA.story || '',
+      yearsAgo: itemA.yearsAgo || '',
+      image: itemA.image || '',
+      images: Array.isArray(itemA.images) ? [...itemA.images] : []
+    };
+
+    itemA.title = itemB.title || '';
+    itemA.story = itemB.story || '';
+    itemA.yearsAgo = itemB.yearsAgo || '';
+    itemA.image = itemB.image || '';
+    itemA.images = Array.isArray(itemB.images) ? [...itemB.images] : [];
+
+    itemB.title = temp.title;
+    itemB.story = temp.story;
+    itemB.yearsAgo = temp.yearsAgo;
+    itemB.image = temp.image;
+    itemB.images = temp.images;
+
+    saveMemoriesData(data);
+    res.json({
+      success: true,
+      message: `Successfully swapped ${slotA.toUpperCase()} and ${slotB.toUpperCase()}`,
+      slotA: itemA,
+      slotB: itemB
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to swap slots', details: err.message });
+  }
+});
+
 // POST update memory slot details (title, story, yearsAgo, images)
 app.post('/api/memories/:slot', (req, res) => {
   try {

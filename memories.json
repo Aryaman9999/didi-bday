@@ -16,30 +16,37 @@
       "image": "assets/images/memories/day1_1792426674191.jpg",
       "images": [
         "assets/images/memories/day1_1792426674191.jpg",
-        "assets/images/memories/day1_1792426741711.jpg",
         "assets/images/memories/day1_1792426806300.jpg"
       ],
       "yearsAgo": "The earliest chapter"
     },
     {
       "day": 2,
-      "title": "Growing Up in Chandigarh",
-      "story": "The wide avenues, breezy evenings, and countless family moments back in CHD. You were always the wiser, kinder big sister looking out for me.",
-      "image": "",
-      "images": [],
-      "yearsAgo": "Chandigarh days"
+      "title": "Different styles same swag!",
+      "story": "Here you see our Nitu in different outfits but each one in increasing order of AURA. She has been surrounded by paparazi since her birth.",
+      "image": "assets/images/memories/day2_1792430081596.jpg",
+      "images": [
+        "assets/images/memories/day2_1792430081596.jpg",
+        "assets/images/memories/day2_1792430182502.jpg",
+        "assets/images/memories/day2_1792496068427.jpg"
+      ],
+      "yearsAgo": "Fashion Icon"
     },
     {
       "day": 3,
-      "title": "The Ten-Year Wisdom",
-      "story": "Being 10 years younger meant having the ultimate role model. Whenever I needed advice, a gentle reality check, or a laugh, you were always right there.",
-      "image": "",
-      "images": [],
-      "yearsAgo": "Through the years"
+      "title": "Phtogenic since birth",
+      "story": "Posing has always been the strong point of doctore sahiba, even a lack of hair didnt undo the look.",
+      "image": "assets/images/memories/day3_1792497562534.jpg",
+      "images": [
+        "assets/images/memories/day3_1792497562534.jpg",
+        "assets/images/memories/day3_1792496444259.jpg",
+        "assets/images/memories/day3_1792497118752.jpg"
+      ],
+      "yearsAgo": "Putting today's star babies to shame"
     },
     {
       "day": 4,
-      "title": "A Smile for Every Patient",
+      "title": "Nana Nani's Favourite!",
       "story": "Watching you pursue dentistry with such dedication was incredible. Bringing comfort, relieving pain, and crafting confident smiles has always been your gift.",
       "image": "",
       "images": [],
@@ -47,7 +54,7 @@
     },
     {
       "day": 5,
-      "title": "The Yogi at Heart",
+      "title": "Nana Nani's Favourite! part 2",
       "story": "Finding calm amidst life's hustle. Your journey into yoga isn't just about asanas; it's the peaceful energy and mindfulness you radiate wherever you go.",
       "image": "",
       "images": [],
