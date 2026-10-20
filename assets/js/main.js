@@ -12,19 +12,39 @@ let reelSlides = [];
 let isInitialized = false;
 
 // --------------------------------------------------------------------------
-// Date Helpers & Simulation Mode
+// Date Helpers & Indian Standard Time (IST) Synchronization
 // --------------------------------------------------------------------------
+// Synchronized to Indian Standard Time (IST, UTC+5:30)
+// This ensures memories unlock at precisely 12:00 AM midnight in India,
+// regardless of where in the world the visitor is (e.g. Sydney, Nova Scotia).
+function getIndiaDateStr() {
+  try {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    return formatter.format(new Date());
+  } catch (e) {
+    // Robust mathematical UTC+5:30 fallback
+    const now = new Date();
+    const istMs = now.getTime() + (now.getTimezoneOffset() * 60000) + (5.5 * 3600000);
+    const istDate = new Date(istMs);
+    const y = istDate.getFullYear();
+    const m = String(istDate.getMonth() + 1).padStart(2, '0');
+    const d = String(istDate.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+}
+
 function getActiveDateStr() {
   const urlParams = new URLSearchParams(window.location.search);
   const sim = urlParams.get('simulateDate');
   if (sim && /^\d{4}-\d{2}-\d{2}$/.test(sim)) {
     return sim;
   }
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, '0');
-  const d = String(now.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+  return getIndiaDateStr();
 }
 
 function parseLocalDate(dateStr) {
@@ -154,6 +174,19 @@ async function initAlbum() {
     setupBirthdayCelebration();
   }
 
+  // Live India Midnight Checker: automatically unlocks new day memory when midnight strikes in India
+  let trackedDate = currentDate;
+  setInterval(() => {
+    const freshDate = getActiveDateStr();
+    if (freshDate !== trackedDate) {
+      trackedDate = freshDate;
+      renderMemoryGrid(freshDate, unlockAll);
+      if (freshDate >= albumData.config.birthday) {
+        setupBirthdayCelebration();
+      }
+    }
+  }, 20000);
+
   // Setup Guestbook
   initGuestbook();
 
@@ -254,7 +287,7 @@ function renderMemoryGrid(currentDate, unlockAll) {
           <div class="locked-placeholder">
             <div class="wax-seal"><span>✦</span></div>
             <div class="locked-date-badge">Opens ${formatDisplayDate(unlockDate)}</div>
-            <div class="locked-hint">A cherished memory waits inside</div>
+            <div class="locked-hint">Unlocks 12:00 AM India Time (IST)</div>
           </div>
         </div>
         <div class="card-content">
@@ -263,11 +296,11 @@ function renderMemoryGrid(currentDate, unlockAll) {
             <span class="card-era">✦ Locked ✦</span>
           </div>
           <h3 class="card-title" style="color: var(--brown-mid); opacity: 0.7;">Secret Memory #${mem.day}</h3>
-          <p class="card-snippet" style="opacity: 0.5;">This special memory will bloom open automatically on ${formatDisplayDate(unlockDate)}.</p>
+          <p class="card-snippet" style="opacity: 0.5;">This special memory will bloom open automatically on ${formatDisplayDate(unlockDate)} at 12:00 AM India Time.</p>
         </div>
       `;
       card.addEventListener('click', () => {
-        alert(`✦ This memory unlocks on ${formatDisplayDate(unlockDate)}! Check back then.`);
+        alert(`✦ This memory unlocks on ${formatDisplayDate(unlockDate)} at 12:00 AM IST (Midnight in India)! Check back then.`);
       });
     }
 
