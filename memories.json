@@ -51,8 +51,13 @@
       "day": 4,
       "title": "Nana Nani's Favourite!",
       "story": "Watching you pursue dentistry with such dedication was incredible. Bringing comfort, relieving pain, and crafting confident smiles has always been your gift.",
-      "image": "",
-      "images": [],
+      "image": "assets/images/memories/day4_1792606699584.jpg",
+      "images": [
+        "assets/images/memories/day4_1792606699584.jpg",
+        "assets/images/memories/day4_1792606788694.jpg",
+        "assets/images/memories/day4_1792606836001.jpg",
+        "assets/images/memories/day4_1792607026395.jpg"
+      ],
       "yearsAgo": "Dedication & Passion"
     },
     {
