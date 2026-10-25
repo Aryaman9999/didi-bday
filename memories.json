@@ -76,11 +76,16 @@
     },
     {
       "day": 6,
-      "title": "Chai, Talks & Siblings Bonds",
-      "story": "Unplanned late-night conversations over hot tea, sharing dreams, secrets, and ridiculous jokes that only the two of us would ever understand.",
-      "image": "",
-      "images": [],
-      "yearsAgo": "Unforgettable talks"
+      "title": "School Life (Part1)",
+      "story": "Padhai, Sports, Compering - you name it she got it. Being her younger brother in the same school was a nightmare as teachers expected the same pattern from me.",
+      "image": "assets/images/memories/day6_1792917563245.jpg",
+      "images": [
+        "assets/images/memories/day6_1792917563245.jpg",
+        "assets/images/memories/day6_1792917617724.jpg",
+        "assets/images/memories/day6_1792917707166.jpg",
+        "assets/images/memories/day6_1792917768911.jpg"
+      ],
+      "yearsAgo": "Honhaar bacha"
     },
     {
       "day": 7,
