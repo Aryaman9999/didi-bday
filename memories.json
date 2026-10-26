@@ -77,7 +77,7 @@
     {
       "day": 6,
       "title": "School Life (Part1)",
-      "story": "Padhai, Sports, Compering - you name it she got it. Being her younger brother in the same school was a nightmare as teachers expected the same pattern from me.",
+      "story": "Padhai, Sports, Comparing - you name it she got it. Being her younger brother in the same school was a nightmare as teachers expected the same pattern from me.",
       "image": "assets/images/memories/day6_1792917563245.jpg",
       "images": [
         "assets/images/memories/day6_1792917563245.jpg",
@@ -89,11 +89,16 @@
     },
     {
       "day": 7,
-      "title": "Braving New Horizons",
-      "story": "Packing dreams across oceans! Moving across the globe takes immense courage, and you made Sydney, Nova Scotia feel like home with your sheer grace.",
-      "image": "",
-      "images": [],
-      "yearsAgo": "The big leap"
+      "title": "School Life (Part2)",
+      "story": "Apart from padhai, sports and and comparing, Nitu was a proven performer during school days which she carried to her adult self as you will see in upcoming memories.",
+      "image": "assets/images/memories/day7_1793036500917.jpg",
+      "images": [
+        "assets/images/memories/day7_1793036500917.jpg",
+        "assets/images/memories/day7_1793036533643.jpg",
+        "assets/images/memories/day7_1793036557294.jpg",
+        "assets/images/memories/day7_1793036612540.jpg"
+      ],
+      "yearsAgo": "Performance ke liye hamesha ready"
     },
     {
       "day": 8,
