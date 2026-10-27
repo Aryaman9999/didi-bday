@@ -102,18 +102,25 @@
     },
     {
       "day": 8,
-      "title": "Atlantic Breezes & Island Life",
-      "story": "Sydney, Nova Scotia with its rugged coasts and tranquil skies. Even across thousands of miles and time zones, you make the distance feel small.",
-      "image": "",
-      "images": [],
-      "yearsAgo": "Nova Scotia beauty"
+      "title": "Promotion to Badi DIDI",
+      "story": "When she was 9 years old she got a well deserved promotion to badi behen. Although she was a bit sad that she would now need to share mummy but she started liking Anu gradually.",
+      "image": "assets/images/memories/day8_1793121726255.jpg",
+      "images": [
+        "assets/images/memories/day8_1793121726255.jpg",
+        "assets/images/memories/day8_1793121771825.jpg",
+        "assets/images/memories/day8_1793121799931.jpg",
+        "assets/images/memories/day8_1793121834682.jpg"
+      ],
+      "yearsAgo": "Role upgrade"
     },
     {
       "day": 9,
       "title": "Inspiring at the YMCA",
       "story": "Guiding Sydney's community toward health and balance every week at the YMCA. You touch so many lives with your gentle instruction and encouraging spirit.",
-      "image": "",
-      "images": [],
+      "image": "assets/images/memories/day9_1793121985720.jpg",
+      "images": [
+        "assets/images/memories/day9_1793121985720.jpg"
+      ],
       "yearsAgo": "Community love"
     },
     {
