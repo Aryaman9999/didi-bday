@@ -446,7 +446,7 @@ body.modal-open {
   z-index: 4;
 }
 
-/* Slideshow Progress Indicator: Dots becoming Dashes */
+/* Slideshow Progress Indicator: Dots becoming Live Progress Pellets */
 .card-slideshow-dots {
   position: absolute;
   bottom: 8px;
@@ -461,20 +461,47 @@ body.modal-open {
 }
 
 .card-slide-indicator {
+  position: relative;
   display: inline-block;
   height: 6px;
   width: 6px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.35s ease, opacity 0.35s ease;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease;
   cursor: pointer;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
+/* Active indicator expands into an elongated pellet that acts as a loading track */
 .card-slide-indicator.active {
-  width: 22px; /* Expands into an elegant golden dash! */
-  background: #FFD56B;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  width: 26px;
+  background: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+
+/* Progress bar inside the active pellet */
+.card-slide-indicator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #FFE082, #FDB813);
+  box-shadow: 0 0 6px rgba(255, 213, 107, 0.85);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.card-slide-indicator.active::after {
+  animation: slidePelletFill 2400ms linear forwards;
+}
+
+.card-slide-indicator.paused::after {
+  animation-play-state: paused !important;
 }
 
 /* Subtle card hover arrows */
@@ -738,10 +765,10 @@ body.modal-open {
   z-index: 4;
 }
 
-/* Modal Slideshow Progress Indicator: Dots becoming Dashes */
+/* Modal Slideshow Progress Indicator: Dots becoming Live Progress Pellets */
 .modal-slideshow-dots {
   position: absolute;
-  bottom: 10px;
+  bottom: 12px;
   left: 0;
   right: 0;
   display: flex;
@@ -749,23 +776,58 @@ body.modal-open {
   align-items: center;
   gap: 7px;
   z-index: 6;
+  pointer-events: auto;
 }
 
 .modal-slide-indicator {
+  position: relative;
   display: inline-block;
   height: 7px;
   width: 7px;
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.35s ease;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease;
   cursor: pointer;
+  overflow: hidden;
+  vertical-align: middle;
 }
 
 .modal-slide-indicator.active {
-  width: 26px; /* Expands into dash to show slideshow progress */
-  background: #FFD56B;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  width: 32px;
+  background: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.6);
+}
+
+.modal-slide-indicator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #FFE082, #FDB813);
+  box-shadow: 0 0 8px rgba(255, 213, 107, 0.85);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.modal-slide-indicator.active::after {
+  animation: slidePelletFill 2400ms linear forwards;
+}
+
+.modal-slide-indicator.paused::after {
+  animation-play-state: paused !important;
+}
+
+@keyframes slidePelletFill {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
 }
 
 .modal-slide-nav {

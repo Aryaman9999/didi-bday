@@ -326,31 +326,71 @@ function renderMemoryGrid(currentDate, unlockAll) {
   }
 }
 
-// Card Slideshow Controller: Auto-advance & dots-becoming-dashes
+// Card Slideshow Controller: Auto-advance, infinite looping & live loading pellet
 function initCardSlideshow(wrapEl, total) {
   if (total <= 1) return;
+  const SLIDE_DURATION = 2400; // Snappy 2.4s duration per photo
   let currentIdx = 0;
   const slides = wrapEl.querySelectorAll('.card-slide');
   const dots = wrapEl.querySelectorAll('.card-slide-indicator');
+  let timer = null;
+  let startTime = Date.now();
+  let remainingTime = SLIDE_DURATION;
+  let isHovered = false;
 
   function goToSlide(nextIdx) {
-    if (!slides[currentIdx] || !slides[nextIdx]) return;
-    slides[currentIdx].classList.remove('active');
-    dots[currentIdx].classList.remove('active');
-    currentIdx = (nextIdx + total) % total;
-    slides[currentIdx].classList.add('active');
-    dots[currentIdx].classList.add('active'); // expands into dash!
+    // Infinite looping: wraps cleanly in both directions
+    const targetIdx = ((nextIdx % total) + total) % total;
+    if (!slides[targetIdx]) return;
+
+    slides.forEach((s, idx) => {
+      s.classList.toggle('active', idx === targetIdx);
+    });
+
+    dots.forEach((d, idx) => {
+      d.classList.remove('paused');
+      if (idx === targetIdx) {
+        // Trigger reflow so progress bar restarts smoothly from 0%
+        d.classList.remove('active');
+        void d.offsetWidth;
+        d.classList.add('active');
+        if (isHovered) d.classList.add('paused');
+      } else {
+        d.classList.remove('active');
+      }
+    });
+
+    currentIdx = targetIdx;
+    remainingTime = SLIDE_DURATION;
+    startTime = Date.now();
+
+    clearTimeout(timer);
+    if (!isHovered) {
+      timer = setTimeout(() => {
+        goToSlide(currentIdx + 1);
+      }, SLIDE_DURATION);
+    }
   }
 
-  let timer = setInterval(() => {
-    goToSlide(currentIdx + 1);
-  }, 3500);
-
   // Pause on hover so viewer can admire
-  wrapEl.addEventListener('mouseenter', () => clearInterval(timer));
+  wrapEl.addEventListener('mouseenter', () => {
+    isHovered = true;
+    clearTimeout(timer);
+    const elapsed = Date.now() - startTime;
+    remainingTime = Math.max(100, remainingTime - elapsed);
+    const activeDot = wrapEl.querySelector('.card-slide-indicator.active');
+    if (activeDot) activeDot.classList.add('paused');
+  });
+
   wrapEl.addEventListener('mouseleave', () => {
-    clearInterval(timer);
-    timer = setInterval(() => goToSlide(currentIdx + 1), 3500);
+    isHovered = false;
+    const activeDot = wrapEl.querySelector('.card-slide-indicator.active');
+    if (activeDot) activeDot.classList.remove('paused');
+    startTime = Date.now();
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      goToSlide(currentIdx + 1);
+    }, remainingTime);
   });
 
   dots.forEach((dot, dIdx) => {
@@ -374,26 +414,29 @@ function initCardSlideshow(wrapEl, total) {
       goToSlide(currentIdx + 1);
     });
   }
+
+  // Start with slide 0 and animate its progress bar
+  goToSlide(0);
 }
 
 // --------------------------------------------------------------------------
 // Modal View & Modal Slideshow
 // --------------------------------------------------------------------------
-let modalSlideshowInterval = null;
+let modalSlideshowTimer = null;
 
 function openModal(mem) {
   const modal = document.getElementById('memoryModal');
   const photoContainer = document.getElementById('modalPhotoContainer');
   const images = getMemoryImages(mem);
 
-  clearInterval(modalSlideshowInterval);
+  clearTimeout(modalSlideshowTimer);
 
   if (images.length <= 1) {
     photoContainer.classList.remove('has-slideshow');
     const imgSrc = images[0] || PLACEHOLDER_SVG;
     photoContainer.innerHTML = `<img id="modalImage" src="${imgSrc}" alt="${mem.title}" onerror="this.src='${PLACEHOLDER_SVG}'">`;
   } else {
-    // Multi-photo Modal Slideshow with dots becoming dashes
+    // Multi-photo Modal Slideshow with live progress pellet & infinite looping
     photoContainer.classList.add('has-slideshow');
     photoContainer.innerHTML = `
       <div class="modal-slideshow">
@@ -410,28 +453,66 @@ function openModal(mem) {
       </div>
     `;
 
-    let currentModalIdx = 0;
     const count = images.length;
     const slides = photoContainer.querySelectorAll('.modal-slide');
     const dots = photoContainer.querySelectorAll('.modal-slide-indicator');
+    const MODAL_DURATION = 2400; // Snappy 2.4s stay
+    let currentModalIdx = 0;
+    let modalStartTime = Date.now();
+    let modalRemainingTime = MODAL_DURATION;
+    let isModalHovered = false;
 
     function switchModalSlide(nextIdx) {
-      if (!slides[currentModalIdx] || !slides[nextIdx]) return;
-      slides[currentModalIdx].classList.remove('active');
-      dots[currentModalIdx].classList.remove('active');
-      currentModalIdx = (nextIdx + count) % count;
-      slides[currentModalIdx].classList.add('active');
-      dots[currentModalIdx].classList.add('active'); // transforms dot into dash!
+      // Infinite looping
+      const targetIdx = ((nextIdx % count) + count) % count;
+      if (!slides[targetIdx]) return;
+
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === targetIdx);
+      });
+
+      dots.forEach((d, idx) => {
+        d.classList.remove('paused');
+        if (idx === targetIdx) {
+          d.classList.remove('active');
+          void d.offsetWidth; // restart progress bar fill from 0%
+          d.classList.add('active');
+          if (isModalHovered) d.classList.add('paused');
+        } else {
+          d.classList.remove('active');
+        }
+      });
+
+      currentModalIdx = targetIdx;
+      modalRemainingTime = MODAL_DURATION;
+      modalStartTime = Date.now();
+
+      clearTimeout(modalSlideshowTimer);
+      if (!isModalHovered) {
+        modalSlideshowTimer = setTimeout(() => {
+          switchModalSlide(currentModalIdx + 1);
+        }, MODAL_DURATION);
+      }
     }
 
-    modalSlideshowInterval = setInterval(() => {
-      switchModalSlide(currentModalIdx + 1);
-    }, 4000);
+    photoContainer.addEventListener('mouseenter', () => {
+      isModalHovered = true;
+      clearTimeout(modalSlideshowTimer);
+      const elapsed = Date.now() - modalStartTime;
+      modalRemainingTime = Math.max(100, modalRemainingTime - elapsed);
+      const activeDot = photoContainer.querySelector('.modal-slide-indicator.active');
+      if (activeDot) activeDot.classList.add('paused');
+    });
 
-    photoContainer.addEventListener('mouseenter', () => clearInterval(modalSlideshowInterval));
     photoContainer.addEventListener('mouseleave', () => {
-      clearInterval(modalSlideshowInterval);
-      modalSlideshowInterval = setInterval(() => switchModalSlide(currentModalIdx + 1), 4000);
+      isModalHovered = false;
+      const activeDot = photoContainer.querySelector('.modal-slide-indicator.active');
+      if (activeDot) activeDot.classList.remove('paused');
+      modalStartTime = Date.now();
+      clearTimeout(modalSlideshowTimer);
+      modalSlideshowTimer = setTimeout(() => {
+        switchModalSlide(currentModalIdx + 1);
+      }, modalRemainingTime);
     });
 
     dots.forEach((dot, idx) => {
@@ -455,6 +536,8 @@ function openModal(mem) {
         switchModalSlide(currentModalIdx + 1);
       });
     }
+
+    switchModalSlide(0);
   }
 
   document.getElementById('modalDay').textContent = mem.day ? `Day ${mem.day}` : "Birthday Exclusive ✦";
@@ -467,7 +550,7 @@ function openModal(mem) {
 }
 
 function closeModal() {
-  clearInterval(modalSlideshowInterval);
+  clearTimeout(modalSlideshowTimer);
   const modal = document.getElementById('memoryModal');
   modal.classList.remove('active');
   document.body.classList.remove('modal-open');
