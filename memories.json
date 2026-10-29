@@ -131,10 +131,18 @@
     {
       "day": 10,
       "title": "Cousins Favourite",
-      "story": "Remembering favorite home-cooked meals, treats from Delhi and Chandigarh, and recreate-at-home attempts. Food tastes best when shared with family.",
-      "image": "",
-      "images": [],
-      "yearsAgo": "Flavors of home"
+      "story": "She had every single younger cousin convinced she was the only cool person in the entire extended family. Two decades of becoming instant favourite of every new child of the family, I on the other hand came to be known as the maarne wale bhaiya.",
+      "image": "assets/images/memories/day10_1793282741155.jpg",
+      "images": [
+        "assets/images/memories/day10_1793282741155.jpg",
+        "assets/images/memories/day10_1793282732408.jpg",
+        "assets/images/memories/day10_1793282945841.jpg",
+        "assets/images/memories/day10_1793282966332.jpg",
+        "assets/images/memories/day10_1793282981384.jpg",
+        "assets/images/memories/day10_1793282995216.jpg",
+        "assets/images/memories/day10_1793283018860.jpg"
+      ],
+      "yearsAgo": "Universally favourite Didi"
     },
     {
       "day": 11,
