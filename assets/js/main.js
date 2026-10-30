@@ -557,98 +557,43 @@ function closeModal() {
 }
 
 // --------------------------------------------------------------------------
-// Birthday Celebration & Reel Mode
+// Birthday Celebration & Cinematic Reel Mode
 // --------------------------------------------------------------------------
 function setupBirthdayCelebration() {
   const bdaySection = document.getElementById('birthdaySection');
-  bdaySection.classList.remove('hidden');
+  if (bdaySection) {
+    bdaySection.classList.remove('hidden');
+    launchConfetti();
+  }
 
-  launchConfetti();
-
-  // Render 3 exclusive birthday memories
-  const container = document.getElementById('exclusiveMemoriesGrid');
-  container.innerHTML = '';
-
-  (albumData.exclusives || []).forEach(exc => {
-    const card = document.createElement('div');
-    card.className = 'memory-card unlocked';
-    card.style.setProperty('--rot', '0deg');
-    const images = getMemoryImages(exc);
-    const hasSlideshow = images.length > 1;
-
-    let photoHtml = '';
-    if (images.length === 0) {
-      photoHtml = `<img src="${PLACEHOLDER_SVG}" alt="${exc.title}" loading="lazy">`;
-    } else if (images.length === 1) {
-      photoHtml = `<img src="${images[0]}" alt="${exc.title}" loading="lazy" onerror="this.src='${PLACEHOLDER_SVG}'">`;
-    } else {
-      photoHtml = `
-        <div class="card-slideshow">
-          ${images.map((src, sIdx) => `
-            <div class="card-slide ${sIdx === 0 ? 'active' : ''}" data-idx="${sIdx}">
-              <img src="${src}" alt="${exc.title} - photo ${sIdx + 1}" loading="lazy" onerror="this.src='${PLACEHOLDER_SVG}'">
-            </div>
-          `).join('')}
-        </div>
-        <button class="card-slide-nav prev" type="button" aria-label="Previous photo">‹</button>
-        <button class="card-slide-nav next" type="button" aria-label="Next photo">›</button>
-        <div class="card-slideshow-dots" aria-label="Slideshow indicator">
-          ${images.map((_, sIdx) => `<span class="card-slide-indicator ${sIdx === 0 ? 'active' : ''}" data-idx="${sIdx}"></span>`).join('')}
-        </div>
-      `;
-    }
-
-    card.innerHTML = `
-      <div class="card-photo-wrap ${hasSlideshow ? 'has-slideshow' : ''}">
-        ${photoHtml}
-      </div>
-      <div class="card-content">
-        <div class="card-meta">
-          <span class="card-day">Exclusive ✦</span>
-          <span class="card-era">Nov 4 Special</span>
-        </div>
-        <h3 class="card-title">${exc.title}</h3>
-        <p class="card-snippet">${exc.story}</p>
-      </div>
-    `;
-
-    const photoWrap = card.querySelector('.card-photo-wrap');
-    if (hasSlideshow && photoWrap) {
-      initCardSlideshow(photoWrap, images.length);
-    }
-
-    card.addEventListener('click', () => openModal(exc));
-    container.appendChild(card);
-  });
-
-  // Prepare full reel slides (15 memories + 3 exclusives + 1 grand finale)
+  // Prepare full reel slides (15 daily memories + 1 grand birthday finale)
   reelSlides = [
     ...albumData.memories.map(m => {
       const imgs = getMemoryImages(m);
       return {
+        day: m.day,
         label: `Day ${m.day} of 15`,
-        title: m.title,
-        story: m.story,
-        image: imgs[0] || PLACEHOLDER_SVG
-      };
-    }),
-    ...(albumData.exclusives || []).map(e => {
-      const imgs = getMemoryImages(e);
-      return {
-        label: "Birthday Exclusive",
-        title: e.title,
-        story: e.story,
+        era: m.yearsAgo || `Day ${m.day} Memory`,
+        title: m.title || `Day ${m.day}`,
+        story: m.story || '',
+        images: imgs,
         image: imgs[0] || PLACEHOLDER_SVG
       };
     }),
     {
       isFinale: true,
+      day: 15,
+      label: "Birthday Grand Finale ✦",
       title: "Happy Birthday, Nitu Didi! 🎂",
-      story: "Dr. Nitishikha Sharma — dentist, yogi, dreamer, and the most incredible big sister in the world. May your year ahead be as luminous, peaceful, and joyful as you are!\n\nWith all our love, always. 💛"
+      story: "Dr. Nitishikha Sharma — dentist with a heart of gold, serene yoga guide at the YMCA, and the most loving big sister anyone could ever have. May your 32nd year bring you thriving wellness, deep peace on the mat, and endless smiles in Nova Scotia!\n\nFrom Delhi and Chandigarh all the way across the Atlantic — we love you always! 💛",
+      images: []
     }
   ];
 
-  document.getElementById('playReelBtn').addEventListener('click', startReel);
+  const playBtn = document.getElementById('playReelBtn');
+  if (playBtn) {
+    playBtn.onclick = startReel;
+  }
 }
 
 function launchConfetti() {
@@ -658,7 +603,7 @@ function launchConfetti() {
 
   const colors = ['#C4974A', '#E8C87A', '#C24538', '#E6A15C', '#88B04B', '#92A8D1', '#F7CAC9'];
 
-  for (let i = 0; i < 65; i++) {
+  for (let i = 0; i < 75; i++) {
     const piece = document.createElement('div');
     piece.className = 'confetti-piece';
     piece.style.left = `${Math.random() * 100}%`;
@@ -669,73 +614,330 @@ function launchConfetti() {
   }
 }
 
-// Reel Slideshow Logic
+// --------------------------------------------------------------------------
+// Cinematic Reel Engine & Web Audio API Soundtrack
+// --------------------------------------------------------------------------
+const REEL_DURATION = 5500; // 5.5s per memory story
+let reelTimer = null;
+let reelProgressRaf = null;
+let reelStartTime = 0;
+let reelElapsedBeforePause = 0;
+let isReelPaused = false;
+let isHoldingDown = false;
+let internalPhotoTimer = null;
+let currentPhotoSubIndex = 0;
+
+// Web Audio API Gentle Music-Box Birthday Melody
+let reelAudioCtx = null;
+let reelAudioPlaying = false;
+let reelAudioMuted = false;
+let melodyTimer = null;
+
+function initReelAudio() {
+  if (reelAudioCtx) return;
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    reelAudioCtx = new AudioContext();
+  } catch (e) {
+    console.warn('Web Audio not supported:', e);
+  }
+}
+
+function playKalimbaTone(freq, time, duration = 0.8) {
+  if (!reelAudioCtx || reelAudioMuted) return;
+  try {
+    const osc = reelAudioCtx.createOscillator();
+    const gain = reelAudioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, time);
+
+    // Soft music-box bell pluck envelope
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.linearRampToValueAtTime(0.075, time + 0.018);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+    osc.connect(gain);
+    gain.connect(reelAudioCtx.destination);
+
+    osc.start(time);
+    osc.stop(time + duration);
+  } catch (e) {}
+}
+
+// Nostalgic, heartwarming pentatonic lullaby motif (C-major / F-major feel)
+const REEL_MELODY = [
+  261.63, 329.63, 392.00, 523.25, 440.00, 392.00, 329.63, 392.00,
+  261.63, 329.63, 392.00, 523.25, 587.33, 523.25, 440.00, 392.00,
+  349.23, 440.00, 523.25, 659.25, 587.33, 523.25, 440.00, 349.23,
+  329.63, 392.00, 523.25, 659.25, 587.33, 523.25, 440.00, 392.00
+];
+
+function startMelody() {
+  initReelAudio();
+  if (!reelAudioCtx) return;
+  if (reelAudioCtx.state === 'suspended') {
+    reelAudioCtx.resume();
+  }
+  stopMelody();
+  reelAudioPlaying = true;
+  let step = 0;
+  const tempo = 360;
+
+  function tick() {
+    if (!reelAudioPlaying) return;
+    const now = reelAudioCtx.currentTime;
+    const freq = REEL_MELODY[step % REEL_MELODY.length];
+    playKalimbaTone(freq, now, 0.9);
+    if (step % 4 === 0) {
+      playKalimbaTone(freq / 2, now, 1.3); // Warm root note
+    }
+    step++;
+    melodyTimer = setTimeout(tick, tempo);
+  }
+  tick();
+}
+
+function stopMelody() {
+  reelAudioPlaying = false;
+  if (melodyTimer) {
+    clearTimeout(melodyTimer);
+    melodyTimer = null;
+  }
+}
+
+function toggleReelAudio() {
+  reelAudioMuted = !reelAudioMuted;
+  const icon = document.getElementById('reelAudioIcon');
+  if (icon) {
+    icon.textContent = reelAudioMuted ? '🔇' : '🎵';
+  }
+}
+
+// Start & Close Reel
 function startReel() {
+  if (!reelSlides || reelSlides.length === 0) {
+    setupBirthdayCelebration();
+  }
   currentReelIndex = 0;
+  isReelPaused = false;
+  isHoldingDown = false;
+  reelElapsedBeforePause = 0;
+
   const overlay = document.getElementById('reelOverlay');
   overlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
+
+  buildReelSegmentBars();
+  setupReelInteractivity();
+  startMelody();
   renderReelSlide();
 }
 
 function closeReel() {
+  clearTimeout(reelTimer);
+  clearTimeout(internalPhotoTimer);
+  cancelAnimationFrame(reelProgressRaf);
+  stopMelody();
+
   const overlay = document.getElementById('reelOverlay');
   overlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
 }
 
+// Build segmented progress bars (Story segments)
+function buildReelSegmentBars() {
+  const container = document.getElementById('reelSegmentBars');
+  if (!container) return;
+  container.innerHTML = '';
+
+  reelSlides.forEach((_, idx) => {
+    const seg = document.createElement('div');
+    seg.className = 'reel-segment';
+    seg.dataset.index = idx;
+    seg.innerHTML = `<div class="reel-segment-fill" id="reelSegFill-${idx}"></div>`;
+    seg.addEventListener('click', (e) => {
+      e.stopPropagation();
+      goToReelSlide(idx);
+    });
+    container.appendChild(seg);
+  });
+}
+
+function updateReelSegments() {
+  reelSlides.forEach((_, idx) => {
+    const seg = document.querySelector(`.reel-segment[data-index="${idx}"]`);
+    const fill = document.getElementById(`reelSegFill-${idx}`);
+    if (!seg || !fill) return;
+
+    if (idx < currentReelIndex) {
+      seg.classList.add('completed');
+      seg.classList.remove('active');
+      fill.style.width = '100%';
+    } else if (idx === currentReelIndex) {
+      seg.classList.add('active');
+      seg.classList.remove('completed');
+      fill.style.width = '0%';
+    } else {
+      seg.classList.remove('active', 'completed');
+      fill.style.width = '0%';
+    }
+  });
+}
+
+// Render active story slide
 function renderReelSlide() {
+  clearTimeout(reelTimer);
+  clearTimeout(internalPhotoTimer);
+  cancelAnimationFrame(reelProgressRaf);
+
   const slide = reelSlides[currentReelIndex];
-  const slideBox = document.getElementById('reelSlideBox');
+  const container = document.getElementById('reelCardContainer');
+  const ambientBg = document.getElementById('reelAmbientBg');
+  const stepLabel = document.getElementById('reelStepIndicator');
+
+  updateReelSegments();
 
   if (slide.isFinale) {
-    slideBox.className = 'reel-slide-wrapper finale-slide';
-    slideBox.innerHTML = `
-      <div style="max-width: 650px; margin: 0 auto;">
-        <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🎂 ✨ 💛</div>
-        <h2 class="reel-title" style="font-size: 2.8rem; margin-bottom: 1rem; color: var(--gold);">${slide.title}</h2>
-        <p class="reel-story" style="font-size: 1.25rem; line-height: 1.8;">${slide.story}</p>
-        <div style="margin-top: 2rem; font-family: var(--font-hand); font-size: 1.8rem; color: var(--brown-mid);">
-          From Chandigarh to Sydney, Nova Scotia with all our hearts!
+    if (stepLabel) stepLabel.textContent = "Grand Celebration 🎉";
+    if (ambientBg) ambientBg.style.backgroundImage = 'none';
+
+    container.innerHTML = `
+      <div class="reel-finale-card">
+        <div class="reel-finale-emojis">🎂 ✨ 💛</div>
+        <h2 class="reel-finale-title">${escapeHtml(slide.title)}</h2>
+        <p class="reel-finale-story">${escapeHtml(slide.story).replace(/\n\n/g, '<br><br>')}</p>
+        <div class="reel-finale-route">From Delhi &amp; Chandigarh ➔ Sydney, Nova Scotia with all our love!</div>
+        <div class="reel-finale-actions">
+          <button class="reel-action-btn primary" type="button" onclick="startReel()">
+            🔁 Replay Memory Reel
+          </button>
+          <button class="reel-action-btn secondary" type="button" onclick="closeReel()">
+            ✦ Back to Scrapbook
+          </button>
         </div>
       </div>
     `;
     launchConfetti();
-  } else {
-    slideBox.className = 'reel-slide-wrapper';
-    slideBox.innerHTML = `
-      <div class="reel-img-box">
-        <img src="${slide.image}" alt="${slide.title}" onerror="this.src='${PLACEHOLDER_SVG}'">
-      </div>
-      <div class="reel-content-box">
-        <span class="reel-step-label">${slide.label}</span>
-        <h2 class="reel-title">${slide.title}</h2>
-        <p class="reel-story">${slide.story}</p>
-      </div>
-    `;
+    return; // Finale pauses indefinitely until user chooses
   }
 
-  // Render Dots
-  const dotsContainer = document.getElementById('reelDots');
-  dotsContainer.innerHTML = '';
-  reelSlides.forEach((_, idx) => {
-    const dot = document.createElement('span');
-    dot.className = `reel-dot ${idx === currentReelIndex ? 'active' : ''}`;
-    dot.addEventListener('click', () => {
-      currentReelIndex = idx;
-      renderReelSlide();
-    });
-    dotsContainer.appendChild(dot);
-  });
+  // Normal Memory Slide (Days 1–15)
+  if (stepLabel) stepLabel.textContent = slide.label;
+  const images = slide.images && slide.images.length > 0 ? slide.images : [slide.image || PLACEHOLDER_SVG];
+  currentPhotoSubIndex = 0;
 
-  document.getElementById('reelPrevBtn').style.visibility = currentReelIndex === 0 ? 'hidden' : 'visible';
-  document.getElementById('reelNextBtn').textContent = currentReelIndex === reelSlides.length - 1 ? 'Finish ✦' : 'Next →';
+  // Set ambient background
+  if (ambientBg) {
+    ambientBg.style.backgroundImage = `url("${images[0]}")`;
+  }
+
+  const multiPhotoBadge = images.length > 1
+    ? `<div class="reel-photo-counter-badge" id="reelPhotoBadge">📷 1/${images.length} Photos</div>`
+    : '';
+
+  // Random gentle polaroid tilt (-1.5deg to +1.5deg)
+  const tilts = [-1.4, 1.2, -0.8, 1.5, -1.2, 0.9, -1.5, 1.4];
+  const tilt = tilts[currentReelIndex % tilts.length];
+
+  container.innerHTML = `
+    <div class="reel-polaroid-frame" style="transform: rotate(${tilt}deg);">
+      <div class="reel-photo-viewport">
+        ${multiPhotoBadge}
+        <img src="${images[0]}" id="reelPhotoImg" class="reel-photo-img" alt="${escapeHtml(slide.title)}" onerror="this.src='${PLACEHOLDER_SVG}'">
+      </div>
+      <div class="reel-caption-card">
+        <div class="reel-caption-meta">
+          <span class="reel-caption-day">Day ${slide.day}</span>
+          <span class="reel-caption-era">${escapeHtml(slide.era || '')}</span>
+        </div>
+        <h3 class="reel-caption-title">${escapeHtml(slide.title)}</h3>
+        <p class="reel-caption-story">${escapeHtml(slide.story)}</p>
+      </div>
+    </div>
+  `;
+
+  // Cycle through sub-photos if memory has multiple photos
+  if (images.length > 1) {
+    const subPhotoInterval = Math.max(1800, Math.floor(REEL_DURATION / images.length));
+    function nextSubPhoto() {
+      if (isReelPaused || isHoldingDown) return;
+      currentPhotoSubIndex = (currentPhotoSubIndex + 1) % images.length;
+      const imgEl = document.getElementById('reelPhotoImg');
+      const badgeEl = document.getElementById('reelPhotoBadge');
+      if (imgEl) {
+        imgEl.src = images[currentPhotoSubIndex];
+        // Restart smooth Ken Burns animation on sub-photo
+        imgEl.style.animation = 'none';
+        void imgEl.offsetWidth;
+        imgEl.style.animation = 'kenBurnsMotion 5s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+      }
+      if (badgeEl) {
+        badgeEl.textContent = `📷 ${currentPhotoSubIndex + 1}/${images.length} Photos`;
+      }
+      if (ambientBg) {
+        ambientBg.style.backgroundImage = `url("${images[currentPhotoSubIndex]}")`;
+      }
+      internalPhotoTimer = setTimeout(nextSubPhoto, subPhotoInterval);
+    }
+    internalPhotoTimer = setTimeout(nextSubPhoto, subPhotoInterval);
+  }
+
+  // Start live progress animation
+  startSlideProgress(REEL_DURATION);
+}
+
+// Smooth Progress Animation for the active segment bar
+function startSlideProgress(duration) {
+  reelStartTime = performance.now();
+  reelElapsedBeforePause = 0;
+  const fill = document.getElementById(`reelSegFill-${currentReelIndex}`);
+
+  function step(timestamp) {
+    if (!fill) return;
+    if (!isReelPaused && !isHoldingDown) {
+      const elapsed = (timestamp - reelStartTime) + reelElapsedBeforePause;
+      const progress = Math.min(100, (elapsed / duration) * 100);
+      fill.style.width = `${progress}%`;
+
+      if (elapsed >= duration) {
+        nextReelSlide();
+        return;
+      }
+    }
+    reelProgressRaf = requestAnimationFrame(step);
+  }
+
+  reelProgressRaf = requestAnimationFrame(step);
+}
+
+function pauseReel() {
+  if (isReelPaused) return;
+  isReelPaused = true;
+  const now = performance.now();
+  reelElapsedBeforePause += (now - reelStartTime);
+  const icon = document.getElementById('reelPlayPauseIcon');
+  if (icon) icon.textContent = '▶';
+}
+
+function resumeReel() {
+  if (!isReelPaused || isHoldingDown) return;
+  isReelPaused = false;
+  reelStartTime = performance.now();
+  const icon = document.getElementById('reelPlayPauseIcon');
+  if (icon) icon.textContent = '⏸';
+}
+
+function toggleReelPlayPause() {
+  if (isReelPaused) {
+    resumeReel();
+  } else {
+    pauseReel();
+  }
 }
 
 function nextReelSlide() {
   if (currentReelIndex < reelSlides.length - 1) {
-    currentReelIndex++;
-    renderReelSlide();
+    goToReelSlide(currentReelIndex + 1);
   } else {
     closeReel();
   }
@@ -743,8 +945,66 @@ function nextReelSlide() {
 
 function prevReelSlide() {
   if (currentReelIndex > 0) {
-    currentReelIndex--;
-    renderReelSlide();
+    goToReelSlide(currentReelIndex - 1);
+  }
+}
+
+function goToReelSlide(idx) {
+  if (idx < 0 || idx >= reelSlides.length) return;
+  currentReelIndex = idx;
+  renderReelSlide();
+}
+
+// Touch, Hold & Tap Setup
+let holdDownTimer = null;
+
+function setupReelInteractivity() {
+  const stage = document.getElementById('reelStage');
+  const tapLeft = document.getElementById('reelTapLeft');
+  const tapRight = document.getElementById('reelTapRight');
+  const playPauseBtn = document.getElementById('reelPlayPauseBtn');
+  const audioBtn = document.getElementById('reelAudioBtn');
+  const prevBtn = document.getElementById('reelPrevBtn');
+  const nextBtn = document.getElementById('reelNextBtn');
+
+  if (playPauseBtn) playPauseBtn.onclick = toggleReelPlayPause;
+  if (audioBtn) audioBtn.onclick = toggleReelAudio;
+  if (prevBtn) prevBtn.onclick = prevReelSlide;
+  if (nextBtn) nextBtn.onclick = nextReelSlide;
+
+  // Press & Hold to pause anywhere on stage
+  if (stage) {
+    const handleHoldStart = (e) => {
+      if (e.target.closest('.reel-action-btn') || e.target.closest('.reel-icon-btn')) return;
+      isHoldingDown = true;
+      const now = performance.now();
+      reelElapsedBeforePause += (now - reelStartTime);
+    };
+
+    const handleHoldEnd = () => {
+      if (isHoldingDown) {
+        isHoldingDown = false;
+        reelStartTime = performance.now();
+      }
+    };
+
+    stage.onpointerdown = handleHoldStart;
+    window.onpointerup = handleHoldEnd;
+    window.onpointercancel = handleHoldEnd;
+  }
+
+  // Taps for quick slide switching
+  if (tapLeft) {
+    tapLeft.onclick = (e) => {
+      e.stopPropagation();
+      prevReelSlide();
+    };
+  }
+  if (tapRight) {
+    tapRight.onclick = (e) => {
+      e.stopPropagation();
+      nextReelSlide();
+    };
   }
 }
 
@@ -892,20 +1152,23 @@ function setupEventListeners() {
     });
   }
 
-  // Reel Navigation
-  document.getElementById('reelCloseBtn').addEventListener('click', closeReel);
-  document.getElementById('reelNextBtn').addEventListener('click', nextReelSlide);
-  document.getElementById('reelPrevBtn').addEventListener('click', prevReelSlide);
+  // Reel Navigation is handled dynamically in setupReelInteractivity()
+  const closeReelBtn = document.getElementById('reelCloseBtn');
+  if (closeReelBtn) closeReelBtn.onclick = closeReel;
 
   // Keyboard navigation
   window.addEventListener('keydown', (e) => {
+    const isReelOpen = document.getElementById('reelOverlay') && !document.getElementById('reelOverlay').classList.contains('hidden');
     if (e.key === 'Escape') {
       closeModal();
       closeReel();
-    } else if (e.key === 'ArrowRight' && !document.getElementById('reelOverlay').classList.contains('hidden')) {
+    } else if (isReelOpen && (e.key === 'ArrowRight' || e.key === 'PageDown')) {
       nextReelSlide();
-    } else if (e.key === 'ArrowLeft' && !document.getElementById('reelOverlay').classList.contains('hidden')) {
+    } else if (isReelOpen && (e.key === 'ArrowLeft' || e.key === 'PageUp')) {
       prevReelSlide();
+    } else if (isReelOpen && e.code === 'Space') {
+      e.preventDefault();
+      toggleReelPlayPause();
     }
   });
 }

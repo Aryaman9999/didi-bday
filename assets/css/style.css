@@ -995,156 +995,451 @@ body.modal-open {
 }
 
 /* --------------------------------------------------------------------------
-   Full-Screen Memory Reel Overlay (Slideshow)
+   Cinematic Birthday Memory Reel (Interactive Story Experience)
    -------------------------------------------------------------------------- */
 .reel-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(20, 13, 8, 0.94);
-  backdrop-filter: blur(12px);
+  background: #0D0907;
   z-index: 2000;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.reel-close-btn {
+/* Top Story Progress & Controls Bar */
+.reel-top-bar {
+  position: relative;
+  z-index: 30;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 14px 18px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reel-segment-bars {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  height: 3.5px;
+}
+
+.reel-segment {
+  flex: 1;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.reel-segment-fill {
   position: absolute;
-  top: 24px;
-  right: 24px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  width: 44px;
-  height: 44px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: linear-gradient(90deg, #FFE082, #FDB813);
+  box-shadow: 0 0 6px rgba(253, 184, 19, 0.9);
+  border-radius: 4px;
+  transition: width 0.1s linear;
+}
+
+.reel-segment.completed .reel-segment-fill {
+  width: 100% !important;
+}
+
+.reel-top-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reel-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reel-live-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #FFE082;
+  background: rgba(255, 224, 130, 0.15);
+  border: 1px solid rgba(255, 224, 130, 0.35);
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.reel-step-pill {
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+}
+
+.reel-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reel-icon-btn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #FFF;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: var(--transition-smooth);
-  z-index: 10;
+  transition: all 0.2s ease;
 }
 
-.reel-close-btn:hover {
-  background: var(--gold);
-  border-color: var(--gold);
+.reel-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.06);
+}
+
+.reel-icon-btn.reel-close:hover {
+  background: #C24538;
+  border-color: #C24538;
   transform: rotate(90deg);
 }
 
-.reel-container {
-  max-width: 950px;
+/* Reel Stage */
+.reel-stage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  overflow: hidden;
+  padding: 1rem 1.5rem 2.2rem;
+}
+
+/* Ambient Blurred Glow Backdrop */
+.reel-ambient-bg {
+  position: absolute;
+  inset: -60px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(55px) brightness(0.24) saturate(1.4);
+  transform: scale(1.15);
+  transition: background-image 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Touch & Click Targets */
+.reel-tap-area {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 15;
+  cursor: pointer;
+}
+
+.reel-tap-area.tap-left {
+  left: 0;
+  width: 30%;
+}
+
+.reel-tap-area.tap-right {
+  right: 0;
+  width: 70%;
+}
+
+/* Main Card Container */
+.reel-card-container {
+  position: relative;
+  z-index: 20;
+  max-width: 640px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none; /* Allows clicks to pass through to tap areas or buttons */
+}
+
+/* Interactive elements inside container remain clickable */
+.reel-card-container * {
+  pointer-events: auto;
+}
+
+/* Polaroid Card in Reel */
+.reel-polaroid-frame {
+  background: #FAF7F2;
+  border-radius: 8px;
+  padding: 14px 14px 18px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.12);
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 12px;
+  position: relative;
+  animation: reelCardPop 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
 }
 
-.reel-slide-wrapper {
-  background: var(--card-bg);
-  border-radius: 6px;
-  padding: 1.75rem;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  gap: 2rem;
-  align-items: center;
-  min-height: 460px;
+/* Vintage washi tape pin */
+.reel-polaroid-frame::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 100px;
+  height: 22px;
+  background: rgba(232, 200, 122, 0.8);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px);
+  z-index: 5;
 }
 
-.reel-slide-wrapper.finale-slide {
-  grid-template-columns: 1fr;
-  text-align: center;
-  padding: 4rem 2rem;
-}
-
-.reel-img-box {
+.reel-photo-viewport {
+  position: relative;
   width: 100%;
-  height: 400px;
-  border-radius: 4px;
-  background: var(--locked-bg);
+  height: 380px;
+  border-radius: 5px;
   overflow: hidden;
+  background: #241A12;
 }
 
-.reel-img-box img {
+.reel-photo-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  animation: kenBurnsMotion 6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-.reel-content-box {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  text-align: left;
+@keyframes kenBurnsMotion {
+  0% {
+    transform: scale(1.0) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.09) translate(-1.2%, -0.8%);
+  }
 }
 
-.reel-step-label {
-  font-family: var(--font-hand);
-  font-size: 1.6rem;
-  color: var(--gold);
+@keyframes reelCardPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.reel-title {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  color: var(--brown-dark);
+/* Multi-photo pill in reel */
+.reel-photo-counter-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(20, 15, 10, 0.78);
+  backdrop-filter: blur(6px);
+  color: #FFE082;
+  font-size: 0.75rem;
   font-weight: 700;
-  line-height: 1.2;
-}
-
-.reel-story {
-  font-size: 1.05rem;
-  line-height: 1.7;
-  color: var(--brown-dark);
-}
-
-.reel-nav-bar {
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 224, 130, 0.45);
+  z-index: 6;
   display: flex;
   align-items: center;
+  gap: 5px;
+}
+
+/* Reel Caption Area */
+.reel-caption-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+  padding: 2px 6px;
+}
+
+.reel-caption-meta {
+  display: flex;
   justify-content: space-between;
-  padding: 0 1rem;
+  align-items: center;
 }
 
-.reel-btn {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #fff;
-  padding: 0.7rem 1.4rem;
-  border-radius: 30px;
+.reel-caption-day {
+  font-family: var(--font-hand);
+  font-size: 1.45rem;
+  color: var(--gold-dark);
+  font-weight: 700;
+}
+
+.reel-caption-era {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brown-mid);
+  font-weight: 700;
+}
+
+.reel-caption-title {
   font-family: var(--font-serif);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: var(--transition-smooth);
+  font-size: 1.4rem;
+  color: var(--brown-dark);
+  font-weight: 700;
+  line-height: 1.25;
 }
 
-.reel-btn:hover {
+.reel-caption-story {
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: #4A3525;
+  max-height: 110px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.reel-caption-story::-webkit-scrollbar { display: none; }
+
+/* Grand Finale Celebration Card */
+.reel-finale-card {
+  background: radial-gradient(circle at center, #2B1D12 0%, #150D08 100%);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 2.8rem 2rem;
+  color: #FFF;
+  text-align: center;
+  max-width: 580px;
+  width: 100%;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+  animation: reelCardPop 0.5s ease-out forwards;
+}
+
+.reel-finale-emojis {
+  font-size: 3.2rem;
+  margin-bottom: 0.4rem;
+  filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.5));
+}
+
+.reel-finale-title {
+  font-family: var(--font-serif);
+  font-size: 2.3rem;
+  color: #FFE082;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.reel-finale-story {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #FDF6E3;
+  margin-bottom: 1.75rem;
+}
+
+.reel-finale-route {
+  font-family: var(--font-hand);
+  font-size: 1.6rem;
+  color: #E8C87A;
+  margin-bottom: 2rem;
+}
+
+.reel-finale-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.reel-action-btn {
+  padding: 0.75rem 1.6rem;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.reel-action-btn.primary {
+  background: var(--gold);
+  color: #FFF;
+  box-shadow: 0 4px 16px rgba(196, 151, 74, 0.4);
+}
+.reel-action-btn.primary:hover {
+  background: var(--gold-dark);
+  transform: translateY(-2px);
+}
+
+.reel-action-btn.secondary {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #FFF;
+}
+.reel-action-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Desktop Arrow Buttons */
+.reel-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 25;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(20, 15, 10, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFF;
+  font-size: 1.8rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reel-arrow-btn:hover {
   background: var(--gold);
   border-color: var(--gold);
+  transform: translateY(-50%) scale(1.1);
 }
 
-.reel-dots {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-  max-width: 400px;
+.reel-arrow-btn.prev { left: 24px; }
+.reel-arrow-btn.next { right: 24px; }
+
+/* Bottom Hint */
+.reel-bottom-hint {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+  z-index: 20;
 }
 
-.reel-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
-  cursor: pointer;
-  transition: var(--transition-smooth);
-}
-
-.reel-dot.active {
-  background: var(--gold);
-  transform: scale(1.3);
+@media (max-width: 650px) {
+  .reel-arrow-btn { display: none; }
+  .reel-stage { padding: 0.5rem 1rem 1.8rem; }
+  .reel-photo-viewport { height: 46vh; min-height: 260px; }
+  .reel-caption-title { font-size: 1.25rem; }
+  .reel-caption-story { font-size: 0.88rem; max-height: 90px; }
+  .reel-polaroid-frame { padding: 12px 12px 14px; gap: 8px; }
 }
 
 /* --------------------------------------------------------------------------

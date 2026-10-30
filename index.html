@@ -89,16 +89,11 @@
         <span class="bday-script">✦ Today is the Grand Day ✦</span>
         <h2 class="bday-title">Happy Birthday, Didi! 🎂</h2>
         <p class="bday-desc">
-          Dr. Nitishikha Sharma — dentist with a heart of gold, serene yoga guide at the YMCA, and the most loving big sister. All 15 memories have unlocked, plus 3 exclusive celebration stories for today!
+          Dr. Nitishikha Sharma — dentist with a heart of gold, serene yoga guide at the YMCA, and the most loving big sister. All 15 memories have unlocked! Relive the 15-day journey from Delhi &amp; Chandigarh all the way to Nova Scotia:
         </p>
         <button id="playReelBtn" class="play-reel-btn" type="button">
           ▶ Play Your Birthday Memory Reel
         </button>
-
-        <h3 class="exclusives-heading">Birthday Exclusive Memories ✦</h3>
-        <div id="exclusiveMemoriesGrid" class="memory-grid" style="max-width: 1000px; margin: 0 auto;">
-          <!-- Rendered dynamically -->
-        </div>
       </div>
     </section>
 
@@ -160,18 +155,50 @@
   </div>
 
   <!-- ======================================================================
-       4. Memory Reel Fullscreen Slideshow
+       4. Cinematic Birthday Memory Reel
        ====================================================================== -->
   <div id="reelOverlay" class="reel-overlay hidden" role="dialog" aria-modal="true">
-    <button id="reelCloseBtn" class="reel-close-btn" type="button" aria-label="Close reel">×</button>
-    <div class="reel-container">
-      <div id="reelSlideBox" class="reel-slide-wrapper">
-        <!-- Rendered by JS -->
+    <!-- Top Progress Bar (Stories / Reel segmented tracks) -->
+    <div class="reel-top-bar">
+      <div id="reelSegmentBars" class="reel-segment-bars"></div>
+      <div class="reel-top-controls">
+        <div class="reel-badge-wrap">
+          <span class="reel-live-tag">✦ MEMORY REEL</span>
+          <span id="reelStepIndicator" class="reel-step-pill">Day 1 of 15</span>
+        </div>
+        <div class="reel-actions-right">
+          <button id="reelAudioBtn" class="reel-icon-btn" type="button" aria-label="Toggle music" title="Background Music">
+            <span id="reelAudioIcon">🎵</span>
+          </button>
+          <button id="reelPlayPauseBtn" class="reel-icon-btn" type="button" aria-label="Play or Pause" title="Play / Pause">
+            <span id="reelPlayPauseIcon">⏸</span>
+          </button>
+          <button id="reelCloseBtn" class="reel-icon-btn reel-close" type="button" aria-label="Close reel">✕</button>
+        </div>
       </div>
-      <div class="reel-nav-bar">
-        <button id="reelPrevBtn" class="reel-btn" type="button">← Previous</button>
-        <div id="reelDots" class="reel-dots"></div>
-        <button id="reelNextBtn" class="reel-btn" type="button">Next →</button>
+    </div>
+
+    <!-- Main Reel Stage -->
+    <div class="reel-stage" id="reelStage">
+      <!-- Ambient Blurred Glow Backdrop -->
+      <div id="reelAmbientBg" class="reel-ambient-bg"></div>
+
+      <!-- Touch / Tap target zones -->
+      <div class="reel-tap-area tap-left" id="reelTapLeft" aria-label="Previous"></div>
+      <div class="reel-tap-area tap-right" id="reelTapRight" aria-label="Next"></div>
+
+      <!-- Card Stage -->
+      <div id="reelCardContainer" class="reel-card-container">
+        <!-- Injected dynamically by JS -->
+      </div>
+
+      <!-- Navigation Arrows for desktop -->
+      <button id="reelPrevBtn" class="reel-arrow-btn prev" type="button" aria-label="Previous">‹</button>
+      <button id="reelNextBtn" class="reel-arrow-btn next" type="button" aria-label="Next">›</button>
+
+      <!-- Bottom Hint -->
+      <div class="reel-bottom-hint">
+        <span>Tap sides to navigate · Hold down to pause</span>
       </div>
     </div>
   </div>
